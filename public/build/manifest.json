@@ -1,0 +1,26 @@
+{
+  "node_modules/owl.carousel/dist/assets/owl.video.play.png": {
+    "file": "assets/owl.video.play-BJo37keB.png",
+    "src": "node_modules/owl.carousel/dist/assets/owl.video.play.png"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BodTwtsN.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DtNJX28H.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-B502EvXU.css"
+    ],
+    "assets": [
+      "assets/owl.video.play-BJo37keB.png"
+    ]
+  }
+}
