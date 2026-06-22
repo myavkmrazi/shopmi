@@ -22,25 +22,19 @@ class Category extends Model
         ];
     }
 
-    /**
-     * Get the parent category
-     */
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
-    /**
-     * Get the child categories
-     */
+
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-    /**
-     * Get all products in this category
-     */
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

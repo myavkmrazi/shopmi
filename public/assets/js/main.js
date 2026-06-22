@@ -1,6 +1,4 @@
-// main.js
 document.addEventListener('DOMContentLoaded', function () {
-    // Инициализация toastr
     toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -19,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
         "hideMethod": "fadeOut"
     };
 
-    // Слушаем события Livewire 3
     Livewire.on('showToast', (event) => {
         const message = event.message || 'Операция выполнена';
         const type = event.type || 'info';
@@ -31,14 +28,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Слушаем событие обновления корзины (если нужно)
     Livewire.on('cart-updated', (event) => {
         console.log('Cart updated');
-        // Дополнительная логика при обновлении корзины
     });
 });
 
-// jQuery код для кнопки "наверх" (если она есть)
 $(document).ready(function () {
     $(window).scroll(function () {
         if ($(this).scrollTop() > 300) {

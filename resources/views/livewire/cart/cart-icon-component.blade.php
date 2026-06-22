@@ -1,10 +1,14 @@
-<div>
-    <button class="btn p-1 position-relative border-0" type="button" data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-        <i class="fas fa-shopping-cart fs-5 text-dark"></i>
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
-            {{ \App\Helpers\Cart\Cart::getCartQuantityItems() }}
-        </span>
+<li class="nav-item position-relative">
+    <button
+        class="nav-link shopmi-cart-trigger position-relative"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasCart"
+        aria-controls="offcanvasCart"
+    >
+        КОРЗИНА
+        @if ($cartCount > 0)
+            <span class="shopmi-cart-count">{{ $cartCount }}</span>
+        @endif
     </button>
-
-</div>
+</li>

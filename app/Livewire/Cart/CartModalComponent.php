@@ -23,8 +23,18 @@ class CartModalComponent extends Component
 
     public function incrementQuantity($productId)
     {
-        // we use add2Cart for increase by 1
-        Cart::add2Cart($productId, 1);
+        $cart = Cart::getCart();
+
+        if (! isset($cart[$productId])) {
+            return;
+        }
+
+        $result = Cart::setQuantity((int) $productId, (int) $cart[$productId]['quantity'] + 1);
+
+        if (! $result['success']) {
+            $this->dispatch('showToast', message: $result['message'], type: 'error');
+        }
+
         $this->refreshCart();
         $this->dispatch('cart-updated');
     }
@@ -33,22 +43,20 @@ class CartModalComponent extends Component
     {
         $cart = Cart::getCart();
 
-        if (isset($cart[$productId])) {
-            $currentQty = $cart[$productId]['quantity'];
-
-            if ($currentQty > 1) {
-                // reduce quantity by 1
-                // that to need update session directly so that we havnt method update()
-                $cart[$productId]['quantity'] = $currentQty - 1;
-                session(['cart' => $cart]);
-            } else {
-                // if quantity = 1, delete product
-                Cart::removeProductFromCart($productId);
-            }
-
-            $this->refreshCart();
-            $this->dispatch('cart-updated');
+        if (! isset($cart[$productId])) {
+            return;
         }
+
+        $currentQty = (int) $cart[$productId]['quantity'];
+
+        if ($currentQty <= 1) {
+            Cart::removeProductFromCart((int) $productId);
+        } else {
+            Cart::setQuantity((int) $productId, $currentQty - 1);
+        }
+
+        $this->refreshCart();
+        $this->dispatch('cart-updated');
     }
 
     public function removeFromCart($productId)
@@ -57,7 +65,7 @@ class CartModalComponent extends Component
         $this->refreshCart();
         $this->dispatch('cart-updated');
 
-        // if you use massege
+
         $this->dispatch('show-alert', [
             'type' => 'success',
             'message' => 'Товар удален из корзины!'
@@ -66,8 +74,7 @@ class CartModalComponent extends Component
 
     public function clearCart()
     {
-        // this is claer method for cart-update
-        session(['cart' => []]);
+        Cart::clearCart();
         $this->refreshCart();
         $this->dispatch('cart-updated');
     }

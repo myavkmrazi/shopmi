@@ -12,19 +12,20 @@ use Livewire\WithPagination;
 #[Title('Edit User')]
 class UserEditComponent extends Component
 {
-
     use WithPagination;
 
     public User $user;
-    public $name;
-    public $email;
-    public $password;
-    public bool $is_admin;
+    public string $name = '';
+    public string $surname = '';
+    public string $email = '';
+    public string $password = '';
+    public bool $is_admin = false;
 
     public function mount(User $user)
     {
         $this->user = $user;
         $this->name = $user->name;
+        $this->surname = $user->surname;
         $this->email = $user->email;
         $this->is_admin = $user->is_admin;
     }
@@ -33,18 +34,24 @@ class UserEditComponent extends Component
     {
         $validated = $this->validate([
             'name' => 'required|max:255',
+            'surname' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $this->user->id,
-            'password' => 'nullable|min:6',
+            'password' => 'nullable|min:8',
             'is_admin' => 'boolean',
         ]);
 
         $this->user->name = $validated['name'];
+        $this->user->surname = $validated['surname'];
         $this->user->email = $validated['email'];
         $this->user->is_admin = $validated['is_admin'];
+
         if ($validated['password']) {
             $this->user->password = $validated['password'];
         }
+
         $this->user->save();
+        $this->reset('password');
+
         session()->flash('success', 'User updated successfully');
         $this->redirectRoute('admin.users.index', navigate: true);
     }
@@ -52,6 +59,7 @@ class UserEditComponent extends Component
     public function render()
     {
         $user_orders = $this->user->orders()->paginate();
+
         return view('livewire.admin.user.user-edit-component', compact('user_orders'));
     }
 }

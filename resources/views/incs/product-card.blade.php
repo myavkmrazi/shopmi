@@ -1,52 +1,54 @@
-<div class="item" wire:key="{{ $product->id }}">
-    <div class="card h-100 home-product-card position-relative">
-        {{-- Значок ХИТ --}}
-        @if ($product->is_hit)
-            <span class="position-absolute top-0 start-0 badge bg-danger m-2">HIT</span>
-        @endif
+<div class="item h-100" wire:key="product-card-{{ $product->id }}">
+    <article class="shopmi-product-card">
+        <a class="shopmi-product-media" href="{{ route('product', $product->slug) }}" wire:navigate>
+            @if ($product->is_hit)
+                <span class="shopmi-ribbon">HIT</span>
+            @elseif ($product->is_new)
+                <span class="shopmi-ribbon new">NEW</span>
+            @endif
 
-        {{-- Значок НОВИНКА --}}
-        @if ($product->is_new)
-            <span class="position-absolute top-0 end-0 badge bg-success m-2">NEW</span>
-        @endif
+            <button
+                type="button"
+                class="shopmi-wishlist-btn @if ($this->isInWishlist($product->id)) is-active @endif"
+                wire:click.prevent="toggleWishlist({{ $product->id }})"
+                title="В избранное"
+                aria-label="Добавить в избранное"
+            >
+                <i class="fas fa-heart"></i>
+            </button>
 
-        {{-- Ссылка на товар --}}
-        <a href="{{ route('product', $product->slug) }}">
-            @php
-                $imageNumber = (($product->id - 1) % 45) + 1;
-            @endphp
-            <img src="{{ asset('img/products/' . $imageNumber . '.jpg') }}" alt="{{ $product->title }}"
-                class="card-img-top" style="height: 200px; object-fit: cover;">
+            <img src="{{ $product->getImage() }}" alt="{{ $product->title }}" loading="lazy">
         </a>
 
-        <div class="card-body text-center d-flex flex-column">
-
-            <a href="{{ route('product', $product->slug) }}">
-                <h5 class="card-title"
-                    style="height: 60px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
-                    {{ $product->title }}
-                </h5>
+        <div class="shopmi-product-body">
+            <a href="{{ route('product', $product->slug) }}" wire:navigate>
+                <h3 class="shopmi-card-title">{{ $product->title }}</h3>
             </a>
 
-            <p class="card-text mb-2">${{ number_format($product->price, 2) }}</p>
-
-            <div class="mt-auto">
-                <button wire:click="add2Cart({{ $product->id }})" wire:loading.attr="disabled"
-                    class="btn btn-outline-primary btn-sm add-to-cart">
-                    <div wire:loading.remove wire:target="add2Cart({{ $product->id }})">
-                        <i class="fas fa-shopping-cart me-1"></i> В корзину
-                    </div>
-                    <div wire:loading wire:target="add2Cart({{ $product->id }})">
-                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        <span role="status">Loading...</span>
-                    </div>
-                </button>
+            <div class="shopmi-price">
+                <span>${{ number_format($product->price, 2) }}</span>
+                @if ($product->old_price && $product->old_price > $product->price)
+                    <span class="shopmi-price-old">${{ number_format($product->old_price, 2) }}</span>
+                @endif
             </div>
-        </div>
-    </div>
 
-    {{-- НОВЫЙ БЛОК PRODUCT-DETAILS --}}
-    <div class="product-details">
-        <!-- Тут будет контент для деталей товара -->
-    </div>
+            @if ($product->inStock())
+                <button
+                    wire:click="add2Cart({{ $product->id }})"
+                    wire:loading.attr="disabled"
+                    class="shopmi-btn shopmi-btn-outline mt-auto"
+                >
+                    <span wire:loading.remove wire:target="add2Cart({{ $product->id }})">
+                        <i class="fas fa-shopping-bag"></i> В корзину
+                    </span>
+                    <span wire:loading wire:target="add2Cart({{ $product->id }})">
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        Добавляем
+                    </span>
+                </button>
+            @else
+                <span class="shopmi-kicker mt-auto">Нет в наличии</span>
+            @endif
+        </div>
+    </article>
 </div>

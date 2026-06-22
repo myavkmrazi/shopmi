@@ -85,6 +85,15 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="stock" class="form-label required">Stock</label>
+                        <input type="number" min="0" class="form-control @error('stock') is-invalid @enderror" id="stock"
+                            placeholder="Quantity in stock" wire:model="stock">
+                        @error('stock')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label for="is_hit" class="form-check-label">Is hit</label>
                         <input type="checkbox" class="@error('is_hit') is-invalid @enderror" id="is_hit"
                             wire:model="is_hit">
@@ -157,37 +166,37 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="galery" class="form-label">Galery</label>
+                        <label for="gallery" class="form-label">Gallery</label>
                         @if ($photos)
                             <div>
                                 <p class="text-danger">Click on the photo to delete it.</p>
                                 @foreach ($photos as $k => $item)
                                     <img src="{{ asset($item) }}" alt="" height="50"
                                         wire:key="{{ $k }}"
-                                        wire:click="deleteGaleryItem({{ $k }})"
+                                        wire:click="deleteGalleryItem({{ $k }})"
                                         wire:confirm="Are you sure?">
                                 @endforeach
                             </div>
                         @endif
-                        <input id="galery" type="file"
-                            class="form-control @error('galery.*') is-invalid @enderror" wire:model="galery"
-                            placeholder="Galery" multiple>
-                        @error('galery.*')
+                        <input id="gallery" type="file"
+                            class="form-control @error('gallery.*') is-invalid @enderror" wire:model="gallery"
+                            placeholder="Gallery" multiple>
+                        @error('gallery.*')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                         @enderror
-                        <div wire:loading wire:target="galery">
+                        <div wire:loading wire:target="gallery">
                             <span class="text-success">Uploading...</span>
                         </div>
 
-                        @if ($galery)
+                        @if ($gallery)
                             <p class="text-danger">Click on the photo to delete it</p>
                             <div class="mt-2">
-                                @foreach ($galery as $photo)
+                                @foreach ($gallery as $photo)
                                     @if ($photo->isPreviewable())
                                         <img src="{{ $photo->temporaryUrl() }}" alt="" width="100"
-                                            wire:click="removeUpload('galery', '{{ $photo->getFilename() }}')">
+                                            wire:click="removeUpload('gallery', '{{ $photo->getFilename() }}')">
                                     @else
                                         <span class="text-danger">error!</span>
                                     @endif
@@ -196,7 +205,6 @@
                         @endif
                     </div>
 
-                    <!-- Кнопка Save с отступом -->
                     <div class="mb-3">
                         <button type="submit" class="btn btn-info ms-3">
                             Save

@@ -29,7 +29,7 @@ class FileManagerComponent extends Component
         $validated = $this->validate();
         $folders = date('Y') . '/' . date('m') . '/' . date('d');
 
-        $validated['path'] = "uploads/" . $validated['path']->store($folders);
+        $validated['path'] = "uploads/" . $validated['path']->store($folders, 'public_uploads');
         Media::query()->create($validated);
         $this->js("toastr.success('Upload successfully')");
         $this->path = null;

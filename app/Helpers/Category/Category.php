@@ -49,9 +49,7 @@ class Category
 
     public static function item2Tpl($item, $tab, $id): string
     {
-        ob_start();
-        echo view(self::$tpl, ['item' => $item, 'tab' => $tab, 'id' => $id]);
-        return ob_get_clean();
+        return view(self::$tpl, ['item' => $item, 'tab' => $tab, 'id' => $id])->render();
     }
 
     public static function getCategories()
@@ -65,13 +63,13 @@ class Category
     }
     public static function getIds(int $category_id): string
     {
-        $categories = self::getCategories(); // Все категории
+        $categories = self::getCategories(); // all categories
         $ids = '';
 
         foreach ($categories as $category) {
             if ($category['parent_id'] == $category_id) {
                 $ids .= $category['id'] . ',';
-                $ids .= self::getIds($category['id']); // Рекурсивно для детей
+                $ids .= self::getIds($category['id']); 
             }
         }
         return $ids;

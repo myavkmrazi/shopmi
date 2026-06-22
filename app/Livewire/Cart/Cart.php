@@ -4,68 +4,81 @@ namespace App\Livewire\Cart;
 
 use Livewire\Component;
 use App\Helpers\Traits\CartTrait;
-use App\Helpers\Cart\Cart as CartHelper; // Добавьте псевдоним
+use App\Helpers\Cart\Cart as CartHelper;
 
 class Cart extends Component
 {
     use CartTrait;
 
-    //the base attributes
+
     public $cartItems = [];
     protected $listeners = ['cart-updated' => 'refreshCart'];
 
     public function mount()
     {
-        $this->cartItems = CartHelper::getCart(); // Используйте CartHelper
+        CartHelper::sanitize();
+        $this->cartItems = CartHelper::getCart();
     }
 
-    //this is method for increase product quantity
     public function incrementQuantity($productId)
     {
-        CartHelper::add2Cart($productId, 1); // Используйте CartHelper
+        $cart = CartHelper::getCart();
+
+        if (! isset($cart[$productId])) {
+            return;
+        }
+
+        $result = CartHelper::setQuantity((int) $productId, (int) $cart[$productId]['quantity'] + 1);
+
+        if (! $result['success']) {
+            $this->dispatch('showToast', message: $result['message'], type: 'error');
+        }
+
         $this->refreshCart();
         $this->dispatch('cart-updated');
     }
 
     public function decrementQuantity($productId)
     {
-        $cart = CartHelper::getCart(); // Используйте CartHelper
+        $cart = CartHelper::getCart();
 
-        if (isset($cart[$productId])) {
-            $currentQty = $cart[$productId]['quantity'];
-
-            if ($currentQty > 1) {
-                $cart[$productId]['quantity'] = $currentQty - 1;
-                session(['cart' => $cart]);
-            } else {
-                CartHelper::removeProductFromCart($productId); // Используйте CartHelper
-            }
-            $this->refreshCart();
-            $this->dispatch('cart-updated');
+        if (! isset($cart[$productId])) {
+            return;
         }
+
+        $currentQty = (int) $cart[$productId]['quantity'];
+
+        if ($currentQty <= 1) {
+            CartHelper::removeProductFromCart((int) $productId);
+        } else {
+            CartHelper::setQuantity((int) $productId, $currentQty - 1);
+        }
+
+        $this->refreshCart();
+        $this->dispatch('cart-updated');
     }
 
     public function removeFromCart($productId)
     {
-        CartHelper::removeProductFromCart($productId); // Используйте CartHelper
+        CartHelper::removeProductFromCart($productId);
         $this->refreshCart();
         $this->dispatch('cart-updated');
     }
 
     public function clearCart()
     {
-        session(['cart' => []]);
+        CartHelper::clearCart();
         $this->refreshCart();
         $this->dispatch('cart-updated');
     }
 
     public function refreshCart()
     {
-        $this->cartItems = CartHelper::getCart(); // Используйте CartHelper
+        $this->cartItems = CartHelper::getCart(); 
     }
 
     public function render()
     {
         return view('livewire.cart.cart');
     }
-} 
+}

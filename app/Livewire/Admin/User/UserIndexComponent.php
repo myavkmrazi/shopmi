@@ -21,7 +21,7 @@ class UserIndexComponent extends Component
     {
         try {
             DB::beginTransaction();
-            //            $user->orders()->delete();
+           
             DB::table('orders')
                 ->where('user_id', '=', $user->id)
                 ->update(['user_id' => NULL]);

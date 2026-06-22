@@ -5,11 +5,12 @@ namespace App\Livewire\Search;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Helpers\Traits\CartTrait;
-use App\Models\Product; // Добавьте этот импорт
+use App\Helpers\Traits\WishlistTrait;
+use App\Models\Product;
 
 class SearchComponent extends Component
 {
-    use WithPagination, CartTrait;
+    use WithPagination, CartTrait, WishlistTrait;
 
     public $query;
 
@@ -18,14 +19,20 @@ class SearchComponent extends Component
         $this->query = request()->query('query') ?? '';
     }
 
+    public function updatedQuery(): void
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $products = []; // Исправлено: $product → $products (мн. число)
+        $products = collect();
 
         if ($this->query) {
-            $products = Product::query() // Теперь Product доступен
-                ->whereLike('title', '%' . $this->query . '%') // Исправлено: $this->term → $this->query
-                ->paginate(4);
+            $products = Product::query()
+                ->where('stock', '>', 0)
+                ->whereLike('title', '%' . $this->query . '%')
+                ->paginate(12);
         }
 
         return view('livewire.search.search-component', [

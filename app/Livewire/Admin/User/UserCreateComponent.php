@@ -8,25 +8,25 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('components.layouts.admin')]
-#[Title('Create Filter Group')]
+#[Title('Create User')]
 class UserCreateComponent extends Component
 {
-
-    public $name;
-    public $email;
-    public $password;
-    public $surname;
+    public string $name = '';
+    public string $surname = '';
+    public string $email = '';
+    public string $password = '';
     public bool $is_admin = false;
 
     public function save()
     {
         $validated = $this->validate([
             'name' => 'required|max:255',
-            'surname' => 'nullable|max:255',
+            'surname' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:8',
             'is_admin' => 'boolean',
         ]);
+
         $user = new User();
         $user->name = $validated['name'];
         $user->surname = $validated['surname'];

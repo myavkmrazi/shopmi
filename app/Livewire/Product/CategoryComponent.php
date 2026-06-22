@@ -7,19 +7,20 @@ use Livewire\WithPagination;
 use App\Models\Category;
 use App\Models\Product;
 use App\Helpers\Traits\CartTrait;
+use App\Helpers\Traits\WishlistTrait;
 use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\DB;
 
 class CategoryComponent extends Component
 {
-    use WithPagination, CartTrait;
+    use WithPagination, CartTrait, WishlistTrait;
 
     public $slug;
     public $category;
     public string $categoryTitle = '';
     #[Url] public $minPrice = '';
     #[Url] public $maxPrice = '';
-    public $inStock = false;
+    #[Url(except: false)] public bool $inStock = false;
 
     #[Url] public string $sort = 'default';
     #[Url] public array $selected_filters = [];
@@ -52,7 +53,7 @@ class CategoryComponent extends Component
     }
     public function updatedPage($page)
     {
-        // Проверяем, что категория существует
+
         if (!$this->category) {
             return;
         }
@@ -78,7 +79,7 @@ class CategoryComponent extends Component
             return collect()->paginate(6);
         }
 
-        // Получаем ID категории
+
         $categoryIds = [$this->category->id];
         if ($this->category->children && $this->category->children->count() > 0) {
             foreach ($this->category->children as $child) {
@@ -88,7 +89,7 @@ class CategoryComponent extends Component
 
         $query = Product::whereIn('category_id', $categoryIds);
 
-        // ФИЛЬТРАЦИЯ ПО ЦЕНЕ
+
         if ($this->minPrice !== '' && is_numeric($this->minPrice)) {
             $query->where('price', '>=', (float) $this->minPrice);
         }
@@ -96,7 +97,10 @@ class CategoryComponent extends Component
             $query->where('price', '<=', (float) $this->maxPrice);
         }
 
-        // ФИЛЬТРАЦИЯ ПО ВЫБРАННЫМ ФИЛЬТРАМ
+        if ($this->inStock) {
+            $query->where('stock', '>', 0);
+        }
+
         if (!empty($this->selected_filters)) {
             $filterIds = array_map('intval', $this->selected_filters);
             $query->whereHas('filters', function ($q) use ($filterIds) {
@@ -104,7 +108,7 @@ class CategoryComponent extends Component
             });
         }
 
-        // СОРТИРОВКА с проверкой
+
         $sortKey = $this->sort;
         if (!isset($this->sortList[$sortKey])) {
             $sortKey = 'default';
@@ -118,7 +122,7 @@ class CategoryComponent extends Component
         return $query->paginate($this->limit);
     }
 
-    public function resetFilters()
+    public function resetFilters(): void
     {
         $this->minPrice = '';
         $this->maxPrice = '';
@@ -126,6 +130,13 @@ class CategoryComponent extends Component
         $this->selected_filters = [];
         $this->sort = 'default';
         $this->resetPage();
+    }
+
+    public function updated($property): void
+    {
+        if (in_array($property, ['sort', 'limit', 'minPrice', 'maxPrice', 'inStock', 'selected_filters'], true)) {
+            $this->resetPage();
+        }
     }
 
     public function gotoPage($page)
@@ -136,7 +147,7 @@ class CategoryComponent extends Component
 
     public function render()
     {
-        // Проверяем, что категория загружена
+
         if (!$this->category) {
             return view('livewire.product.category-component', [
                 'category' => null,
@@ -159,7 +170,7 @@ class CategoryComponent extends Component
             ->where('category_filters.category_id', $categoryId)
             ->get();
 
-        // Проверка пагинации
+
         $page = request()->query('page', 1);
         $products = $this->products;
 
@@ -167,7 +178,7 @@ class CategoryComponent extends Component
             abort(404);
         }
 
-        // Устанавливаем title для layout
+
         $title = "Категория: {$this->category->title}" . ($page ? ":: Page - {$page}" : '');
 
         return view('livewire.product.category-component', [

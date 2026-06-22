@@ -99,9 +99,14 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-lock"></i>
                                     </span>
-                                    <input type="password" class="form-control" id="password_confirmation"
+                                    <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation"
                                         wire:model="password_confirmation" placeholder="Повторите пароль">
                                 </div>
+                                @error('password_confirmation')
+                                    <div class="invalid-feedback d-block">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
 
                             {{-- Соглашение --}}
@@ -157,17 +162,25 @@
     <style>
         .register-card {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e5e5;
+            border-radius: 0;
+            box-shadow: none;
             overflow: hidden;
             margin: 2rem 0;
         }
 
         .register-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0f0f10;
             color: white;
             padding: 2rem;
             text-align: center;
+        }
+
+        .register-header h2,
+        .btn-register,
+        .login-link {
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
         }
 
         .register-body {
@@ -175,12 +188,12 @@
         }
 
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            border-color: #0f0f10;
+            box-shadow: 0 0 0 0.2rem rgba(184, 255, 44, 0.35);
         }
 
         .btn-register {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0f0f10;
             border: none;
             color: white;
             padding: 12px;
@@ -189,17 +202,17 @@
 
         .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-            color: white;
+            background: #b8ff2c;
+            color: #0f0f10;
         }
 
         .login-link {
-            color: #667eea;
+            color: #0f0f10;
             text-decoration: none;
         }
 
         .login-link:hover {
-            color: #764ba2;
+            color: #0f0f10;
             text-decoration: underline;
         }
     </style>

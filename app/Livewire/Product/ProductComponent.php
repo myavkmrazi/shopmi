@@ -5,15 +5,17 @@ namespace App\Livewire\Product;
 use App\Models\Product;
 use App\Models\FilterGroup;
 use Livewire\Component;
+use App\Helpers\Cart\Cart;
 use App\Helpers\Traits\CartTrait;
+use App\Helpers\Traits\WishlistTrait;
 
 class ProductComponent extends Component
 {
-    use CartTrait;
+    use CartTrait, WishlistTrait;
     public string $slug = '';
     public $product;
     public $productAttributes = [];
-    public int $quantity = 1; // ДОБАВЬТЕ ЭТУ СТРОКУ!
+    public int $quantity = 1;
 
     //add event listener
     protected $listeners = ['cartUpdated' => '$refresh'];
@@ -21,18 +23,22 @@ class ProductComponent extends Component
     public function mount($slug)
     {
         $this->slug = $slug;
-        // upload product in mount
+
         $this->product = Product::with(['category.parent'])
             ->where('slug', $this->slug)
             ->firstOrFail();
 
-        //upload product attribute
+
         $this->loadAttributes();
     }
 
     public function incrementQuantity()
     {
-        $this->quantity++;
+        $max = Cart::maxAllowedQuantity($this->product);
+
+        if ($this->quantity < $max) {
+            $this->quantity++;
+        }
     }
 
     public function decrementQuantity()
@@ -42,20 +48,20 @@ class ProductComponent extends Component
         }
     }
 
-    //overriding the add to cart method
+
     public function addCart($productId)
     {
         $this->add2Cart($productId, $this->quantity);
-        //sending an update to the trash method
+
         $this->dispatch('cart-updated');
 
-        // Optional:Show a notification
+
         $this->dispatch('show-alert', [
             'type' => 'success',
             'message' => 'Товар добавлен в корзину!'
         ]);
 
-        // Сбросить количество после добавления (опционально)
+
         $this->reset('quantity');
     }
 
@@ -74,15 +80,15 @@ class ProductComponent extends Component
     public function render()
     {
         $related_product = Product::query()
-            ->where('category_id', '=', $this->product->category_id) // Товары из той же категории
-            ->where('id', '!=', $this->product->id) //exclude the current product
-            ->limit(8) // Limit to 8 items
+            ->where('category_id', '=', $this->product->category_id)
+            ->where('id', '!=', $this->product->id)
+            ->limit(8)
             ->get();
 
         return view('livewire.product.product-component', [
             'related_product' => $related_product,
             'productAttributes' => $this->productAttributes,
-            'quantity' => $this->quantity // Передаем в шаблон
+            'quantity' => $this->quantity 
         ]);
     }
 }

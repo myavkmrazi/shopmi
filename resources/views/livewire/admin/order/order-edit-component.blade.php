@@ -13,7 +13,7 @@
                 <a href="{{ route('admin.orders.index') }}" wire:navigate class="btn btn-primary">Order List</a>
             </div>
             <div class="card-header py-3">
-                Orders #{{ $order->id }} ({{ $order->status ? 'Completed' : 'New' }})
+                Orders #{{ $order->id }} ({{ $order->statusLabel() }})
             </div>
             <div class="card-body">
 
@@ -35,12 +35,33 @@
                                 <td>{{ $order->email }}</td>
                             </tr>
                             <tr>
+                                <th>Customer surname</th>
+                                <td>{{ $order->surname }}</td>
+                            </tr>
+                            <tr>
+                                <th>Customer phone</th>
+                                <td>{{ $order->phone }}</td>
+                            </tr>
+                            <tr>
+                                <th>Delivery city</th>
+                                <td>{{ $order->city }}</td>
+                            </tr>
+                            <tr>
+                                <th>Delivery address</th>
+                                <td>{{ $order->address }}</td>
+                            </tr>
+                            <tr>
+                                <th>Payment method</th>
+                                <td>{{ ucfirst($order->payment_method) }}</td>
+                            </tr>
+                            <tr>
                                 <th>Customer status</th>
                                 <td>
-                                    <label class="switch">
-                                        <input type="checkbox" wire:model.live="status">
-                                        <span class="slider round"></span>
-                                    </label>
+                                    <select class="form-control" wire:model.live="status">
+                                        @foreach ($statuses as $value => $label)
+                                            <option value="{{ $value }}">{{ $label }}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
                             </tr>
                             <tr>

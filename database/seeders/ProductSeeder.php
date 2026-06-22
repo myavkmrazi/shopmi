@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         $categories = DB::table('categories')->pluck('id')->toArray();
@@ -20,10 +18,10 @@ class ProductSeeder extends Seeder
         foreach ($categories as $category_id) {
             for ($i = 1; $i <= 10; $i++) {
                 $title = $faker->unique()->sentence(3);
-                $price = rand(50000, 500000); // цена в суммах (пример)
+                $price = rand(50000, 500000); 
                 $gallery = [];
 
-                // Генерируем 3–5 картинок
+
                 for ($g = 1; $g <= rand(3, 5); $g++) {
                     $gallery[] = 'public/img/products/' . rand(1, 10) . '.jpg';
                 }
@@ -37,7 +35,7 @@ class ProductSeeder extends Seeder
                     'price' => $price,
                     'old_price' => rand(0, $price + 20000),
                     'image' => 'public/img/products/' . rand(1, 10) . '.jpg',
-                    'galery' => json_encode($gallery),
+                    'gallery' => json_encode($gallery),
                     'is_hit' => rand(0, 1),
                     'is_new' => rand(0, 1),
                     'created_at' => now(),

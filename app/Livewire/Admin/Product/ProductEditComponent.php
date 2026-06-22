@@ -26,6 +26,7 @@ class ProductEditComponent extends Component
     public array $selectedFilters = [];
     public int $price = 0;
     public int $old_price = 0;
+    public int $stock = 100;
     public bool $is_hit = false;
     public bool $is_new = false;
     public ?string $excerpt;
@@ -35,7 +36,7 @@ class ProductEditComponent extends Component
     #[Validate]
     public $image;
     #[Validate]
-    public $galery;
+    public $gallery;
 
     public function mount(Product $product)
     {
@@ -44,12 +45,13 @@ class ProductEditComponent extends Component
         $this->category_id = $product->category_id;
         $this->price = $product->price;
         $this->old_price = $product->old_price;
+        $this->stock = (int) ($product->stock ?? 100);
         $this->is_hit = $product->is_hit;
         $this->is_new = $product->is_new;
         $this->excerpt = $product->excerpt;
         $this->content = $product->content;
         $this->photo = $product->image;
-        $this->photos = $product->galery;
+        $this->photos = $product->gallery;
         $this->selectedFilters = DB::table('filter_products')
             ->where('product_id', '=', $this->product->id)
             ->pluck('filter_id')
@@ -89,12 +91,13 @@ class ProductEditComponent extends Component
             'selectedFilters.*' => 'numeric',
             'price' => 'required|integer',
             'old_price' => 'integer',
+            'stock' => 'required|integer|min:0|max:9999',
             'is_hit' => 'boolean',
             'is_new' => 'boolean',
             'excerpt' => 'nullable|max:255',
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'galery.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 
@@ -103,18 +106,18 @@ class ProductEditComponent extends Component
         $validated = $this->validate();
         $folders = date('Y') . '/' . date('m') . '/' . date('d');
         if (!empty($validated['image'])) {
-            $validated['image'] = "uploads/" . $validated['image']->store($folders);
+            $validated['image'] = "uploads/" . $validated['image']->store($folders, 'public_uploads');
         } else {
             $validated['image'] = $this->photo;
         }
 
-        if (!empty($validated['galery'])) {
-            foreach ($validated['galery'] as $k => $photo) {
-                $validated['galery'][$k] = "uploads/" . $photo->store($folders);
+        if (!empty($validated['gallery'])) {
+            foreach ($validated['gallery'] as $k => $photo) {
+                $validated['gallery'][$k] = "uploads/" . $photo->store($folders, 'public_uploads');
             }
-            $validated['galery'] = array_merge($validated['galery'], $this->photos);
+            $validated['gallery'] = array_merge($validated['gallery'], $this->photos);
         } else {
-            $validated['galery'] = $this->photos;
+            $validated['gallery'] = $this->photos;
         }
 
         try {
@@ -149,7 +152,7 @@ class ProductEditComponent extends Component
         }
     }
 
-    public function deleteGaleryItem($id)
+    public function deleteGalleryItem($id)
     {
         if (isset($this->photos[$id])) {
             unset($this->photos[$id]);

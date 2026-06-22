@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Helpers\Traits;
 
 use App\Helpers\Cart\Cart;
@@ -7,36 +8,34 @@ trait CartTrait
 {
     public int $quantity = 1;
 
-    public function add2Cart(int $productId, $quantity = false)
+    public function add2Cart(int $productId, $quantity = false): bool
     {
         $quantity = $quantity ?: $this->quantity;
+        $quantity = max(1, (int) $quantity);
 
-        if ($quantity < 1)
-            $quantity = 1;
+        $result = Cart::add2Cart($productId, $quantity);
 
-        if (Cart::add2Cart($productId, $quantity)) {
-            // Обновляем ВСЕ компоненты корзины
-            $this->dispatch('cartUpdated');
-
-            // НОВЫЙ СИНТАКСИС Livewire 3 - убрали 'show-toast'
-            $this->dispatch(
-                'showToast',
-                message: 'Товар успешно добавлен в корзину!',
-                type: 'success'
-            );
+        if ($result['success']) {
+            $this->dispatch('cart-updated');
+            $this->dispatch('showToast', message: $result['message'], type: 'success');
 
             return true;
         }
 
+        $this->dispatch('showToast', message: $result['message'], type: 'error');
+
         return false;
     }
+
     public function removeFromCart(int $productId): void
     {
         if (Cart::removeProductFromCart($productId)) {
-            $this->js("toastr.success('Product removed to cart successfuly')");
+            $this->dispatch('showToast', message: 'Товар удален из корзины', type: 'success');
             $this->dispatch('cart-updated');
-        } else {
-            $this->js("toastr.error('Oops! Something went wrong')");
+
+            return;
         }
+
+        $this->dispatch('showToast', message: 'Не удалось удалить товар', type: 'error');
     }
 }

@@ -15,17 +15,13 @@ class OrderManager extends Mailable
 
     public int $order_id;
 
-    /**
-     * Create a new message instance.
-     */
+
     public function __construct(int $order_id)
     {
         $this->order_id = $order_id;
     }
 
-    /**
-     * Get the message envelope.
-     */
+
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -34,9 +30,7 @@ class OrderManager extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
+
     public function content(): Content
     {
         return new Content(
@@ -57,4 +51,4 @@ class OrderManager extends Mailable
         return [];
     }
 }
-// НИКАКОГО HTML КОДА ЗДЕСЬ БОЛЬШЕ НЕ ДОЛЖНО БЫТЬ!
+

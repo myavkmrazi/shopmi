@@ -1,11 +1,9 @@
 <div>
 
-    <!-- Button trigger modal -->
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#fileManager">
         FileManager
     </a>
 
-    <!-- Modal -->
     <div wire:ignore.self class="modal fade" id="fileManager" tabindex="-1" aria-labelledby="fileManagerLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-xl">

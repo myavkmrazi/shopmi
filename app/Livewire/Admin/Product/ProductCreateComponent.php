@@ -24,6 +24,7 @@ class ProductCreateComponent extends Component
     public array $selectedFilters = [];
     public int $price = 0;
     public int $old_price = 0;
+    public int $stock = 100;
     public bool $is_hit = false;
     public bool $is_new = false;
     public string $excerpt;
@@ -31,7 +32,7 @@ class ProductCreateComponent extends Component
     #[Validate]
     public $image;
     #[Validate]
-    public $galery;
+    public $gallery;
 
     public function updatedCategoryId()
     {
@@ -66,12 +67,13 @@ class ProductCreateComponent extends Component
             'selectedFilters.*' => 'numeric',
             'price' => 'required|integer',
             'old_price' => 'integer',
+            'stock' => 'required|integer|min:0|max:9999',
             'is_hit' => 'boolean',
             'is_new' => 'boolean',
             'excerpt' => 'nullable|max:255',
             'content' => 'required',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'galery.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // ← ИЗМЕНЕНО: gallery.* -> galery.*
+            'gallery.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 
@@ -79,13 +81,13 @@ class ProductCreateComponent extends Component
     {
         $validated = $this->validate();
 
-        $folders = date('Y') . '/' . date('m') . '/' . date('d'); // 2025/04/27
+        $folders = date('Y') . '/' . date('m') . '/' . date('d');
         if ($validated['image']) {
-            $validated['image'] = "uploads/" . $validated['image']->store($folders);
+            $validated['image'] = "uploads/" . $validated['image']->store($folders, 'public_uploads');
         }
-        if (!empty($validated['galery'])) { // ← ИЗМЕНЕНО: gallery -> galery
-            foreach ($validated['galery'] as $k => $photo) { // ← ИЗМЕНЕНО: gallery -> galery
-                $validated['galery'][$k] = "uploads/" . $photo->store($folders); // ← ИЗМЕНЕНО: gallery -> galery
+        if (!empty($validated['gallery'])) {
+            foreach ($validated['gallery'] as $k => $photo) {
+                $validated['gallery'][$k] = "uploads/" . $photo->store($folders, 'public_uploads'); 
             }
         }
 

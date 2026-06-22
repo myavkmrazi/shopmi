@@ -22,7 +22,7 @@ class ProductIndexComponent extends Component
     {
         try {
             $image = $product->image;
-            $galery = $product->galery;
+            $gallery = $product->gallery;
             DB::beginTransaction();
             DB::table('filter_products')
                 ->where('product_id', '=', $product->id)
@@ -33,8 +33,8 @@ class ProductIndexComponent extends Component
             if ($image) {
                 Storage::disk('public_uploads_delete')->delete($image);
             }
-            if ($galery) {
-                Storage::disk('public_uploads_delete')->delete($galery);
+            if ($gallery) {
+                Storage::disk('public_uploads_delete')->delete($gallery);
             }
             $this->js("toastr.success('Product removed')");
             return;

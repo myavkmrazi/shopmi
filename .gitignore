@@ -2,9 +2,16 @@
 /node_modules
 .env
 .env.*
+!.env.example
 /storage/*.key
 /public/storage
+/public/uploads
 /.idea
 /.vscode
 npm-debug.log
 yarn-error.log
+.phpunit.result.cache
+laravel.log
+*.rar
+/storage/debugbar
+/storage/logs/*.log

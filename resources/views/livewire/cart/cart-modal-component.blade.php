@@ -1,15 +1,18 @@
 <div>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart" aria-labelledby="offcanvasCartLabel"
         wire:ignore.self style="width: 450px;">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasCartLabel">
-                <i class="fas fa-shopping-cart me-2"></i>Ваша корзина
+
+        <div class="offcanvas-header border-bottom" style="border-color: #e5e5e5 !important; padding: 1.5rem;">
+            <h5 class="offcanvas-title" id="offcanvasCartLabel"
+                style="font-family: 'Oswald', sans-serif; font-size: 28px; letter-spacing: 2px; margin: 0;">
+                <i class="fas fa-shopping-cart me-2" style="color: #0f0f10;"></i>ВАША КОРЗИНА
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"
+                style="opacity: 1; filter: brightness(0);"></button>
         </div>
-        <div class="offcanvas-body p-3">
+
+        <div class="offcanvas-body p-0" style="background: #fff;">
             @php
-                // ЗАРАНЕЕ получаем список существующих картинок
                 $availableImages = [
                     '1.jpg',
                     '2.jpeg',
@@ -71,63 +74,79 @@
             @endphp
 
             @if (!empty($cartItems))
-                <div class="cart-items">
+                <div class="cart-items" style="padding: 1.5rem;">
                     @foreach ($cartItems as $id => $item)
                         @php
                             $imageIndex = $id % count($existingImages);
                             $productImage = $existingImages[$imageIndex];
                         @endphp
 
-                        <div class="cart-item mb-3 p-3 border rounded" wire:key="{{ $id }}">
-                            <div class="d-flex align-items-start">
-                                {{-- Картинка --}}
-                                <a href="/product/{{ $item['slug'] ?? $id }}" class="shrink-0">
+                        <div class="cart-item mb-4" wire:key="{{ $id }}"
+                            style="border-bottom: 1px solid #e5e5e5; padding-bottom: 1.5rem;">
+                            <div class="d-flex gap-3">
+                                <a href="/product/{{ $item['slug'] ?? $id }}" class="flex-shrink-0">
                                     <img src="{{ asset('img/products/' . $productImage) }}"
                                         alt="{{ $item['title'] ?? 'Товар' }}"
-                                        style="width: 80px; height: 80px; object-fit: cover;" class="rounded"
+                                        style="width: 100px; height: 120px; object-fit: cover; border: 1px solid #e5e5e5;"
                                         onerror="this.src='{{ asset('img/products/2.jpeg') }}'">
                                 </a>
 
-                                <div class="grow">
+                                <div class="flex-grow-1">
                                     <a href="{{ route('product', $item['slug']) }}"
-                                        class="text-decoration-none text-dark">
-                                        <h6 class="mb-2 fw-bold">{{ $item['title'] ?? 'Без названия' }}</h6>
+                                        class="text-decoration-none text-dark d-block mb-2">
+                                        <h6
+                                            style="font-family: 'Oswald', sans-serif; font-size: 18px; letter-spacing: 1px; margin: 0; line-height: 1.3;">
+                                            {{ $item['title'] ?? 'Без названия' }}
+                                        </h6>
                                     </a>
-                                    <p class="mb-2 text-muted small">{{ $item['except'] ?? '' }}</p>
 
-                                    <p class="mb-2 text-muted small">
-                                        ${{ number_format($item['price'] ?? 0, 2) }} × {{ $item['quantity'] ?? 1 }}
+                                    @if (!empty($item['except']))
+                                        <p
+                                            style="font-size: 12px; color: #777; letter-spacing: 0.5px; margin-bottom: 0.5rem; text-transform: uppercase;">
+                                            {{ $item['except'] }}
+                                        </p>
+                                    @endif
+
+                                    <p
+                                        style="font-size: 14px; color: #0f0f10; font-weight: 600; margin-bottom: 0.75rem;">
+                                        ${{ number_format($item['price'] ?? 0, 2) }}
                                     </p>
 
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="quantity-controls d-flex align-items-center">
-                                            {{-- Кнопка уменьшить --}}
-                                            <button class="btn btn-sm btn-outline-secondary"
+                                    <div class="d-flex justify-content-between align-items-end">
+                                        <div class="quantity-controls d-flex align-items-center"
+                                            style="border: 1px solid #e5e5e5;">
+                                            <button class="btn btn-sm"
                                                 wire:click="decrementQuantity('{{ $id }}')"
                                                 {{ ($item['quantity'] ?? 1) <= 1 ? 'disabled' : '' }}
-                                                wire:loading.attr="disabled" wire:target="decrementQuantity">
-                                                <i class="fas fa-minus"></i>
+                                                wire:loading.attr="disabled" wire:target="decrementQuantity"
+                                                style="border: none; border-radius: 0; padding: 0.4rem 0.8rem; background: transparent; color: #0f0f10; {{ ($item['quantity'] ?? 1) <= 1 ? 'opacity: 0.3;' : '' }}">
+                                                <i class="fas fa-minus" style="font-size: 12px;"></i>
                                             </button>
 
-                                            {{-- Количество --}}
-                                            <span class="mx-2 fw-bold">{{ $item['quantity'] ?? 1 }}</span>
+                                            <span
+                                                style="padding: 0.4rem 0.8rem; border-left: 1px solid #e5e5e5; border-right: 1px solid #e5e5e5; font-family: 'Oswald', sans-serif; font-size: 16px; letter-spacing: 1px;">
+                                                {{ $item['quantity'] ?? 1 }}
+                                            </span>
 
-                                            {{-- Кнопка увеличить --}}
-                                            <button class="btn btn-sm btn-outline-secondary"
+                                            <button class="btn btn-sm"
                                                 wire:click="incrementQuantity('{{ $id }}')"
-                                                wire:loading.attr="disabled" wire:target="incrementQuantity">
-                                                <i class="fas fa-plus"></i>
+                                                wire:loading.attr="disabled" wire:target="incrementQuantity"
+                                                style="border: none; border-radius: 0; padding: 0.4rem 0.8rem; background: transparent; color: #0f0f10;">
+                                                <i class="fas fa-plus" style="font-size: 12px;"></i>
                                             </button>
                                         </div>
 
-                                        <div class="d-flex align-items-center">
-                                            <span class="fw-bold text-primary me-3 fs-6">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span
+                                                style="font-family: 'Oswald', sans-serif; font-size: 20px; letter-spacing: 1px; color: #0f0f10;">
                                                 ${{ number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2) }}
                                             </span>
-                                            <button class="btn btn-sm btn-outline-danger"
+
+                                            <button class="btn btn-sm"
                                                 wire:click="removeFromCart('{{ $id }}')"
-                                                wire:loading.attr="disabled" wire:target="removeFromCart">
-                                                <i class="fas fa-trash"></i>
+                                                wire:loading.attr="disabled" wire:target="removeFromCart"
+                                                style="border: none; background: transparent; color: #777; padding: 0.4rem;">
+                                                <i class="fas fa-times" style="font-size: 16px;"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -136,10 +155,8 @@
                         </div>
                     @endforeach
 
-                    {{-- ИТОГО --}}
-                    <div class="cart-total mt-4 pt-3 border-top">
+                    <div class="cart-total mt-4 pt-4" style="border-top: 2px solid #0f0f10;">
                         @php
-                            // В Blade нельзя использовать "use", поэтому вычисляем вручную
                             $totalQuantity = 0;
                             $totalPrice = 0;
 
@@ -149,37 +166,120 @@
                             }
                         @endphp
 
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Товары ({{ $totalQuantity }})</span>
+                        <div class="d-flex justify-content-between mb-3"
+                            style="font-size: 14px; color: #777; letter-spacing: 0.5px;">
+                            <span>ТОВАРЫ ({{ $totalQuantity }})</span>
                             <span>${{ number_format($totalPrice, 2) }}</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Доставка</span>
-                            <span>Бесплатно</span>
+
+                        <div class="d-flex justify-content-between mb-3"
+                            style="font-size: 14px; color: #777; letter-spacing: 0.5px;">
+                            <span>ДОСТАВКА</span>
+                            <span>БЕСПЛАТНО</span>
                         </div>
-                        <div class="d-flex justify-content-between fw-bold fs-5 mt-2 pt-2 border-top">
-                            <span>Итого:</span>
-                            <span class="text-primary">${{ number_format($totalPrice, 2) }}</span>
+
+                        <div class="d-flex justify-content-between fw-bold pt-3 mb-4"
+                            style="border-top: 1px solid #e5e5e5; font-family: 'Oswald', sans-serif; font-size: 28px; letter-spacing: 2px;">
+                            <span>ИТОГО:</span>
+                            <span style="color: #0f0f10;">${{ number_format($totalPrice, 2) }}</span>
                         </div>
+
                         <button onclick="window.location.href='{{ route('cart') }}'"
-                            class="btn btn-primary w-100 mt-3 py-2 fw-bold">
-                            <i class="fas fa-credit-card me-2"></i>Оформить заказ
+                            style="width: 100%; background: #0f0f10; color: white; border: none; padding: 1rem; font-family: 'Oswald', sans-serif; font-size: 18px; letter-spacing: 2px; cursor: pointer; transition: background 0.3s ease; margin-bottom: 0.75rem;">
+                            ОФОРМИТЬ ЗАКАЗ
                         </button>
-                        <button class="btn btn-outline-secondary w-100 mt-2" data-bs-dismiss="offcanvas">
-                            Продолжить покупки
+
+                        <button class="btn-close-cart" data-bs-dismiss="offcanvas"
+                            style="width: 100%; background: transparent; color: #0f0f10; border: 1px solid #e5e5e5; padding: 1rem; font-family: 'Oswald', sans-serif; font-size: 18px; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease;">
+                            ПРОДОЛЖИТЬ ПОКУПКИ
                         </button>
                     </div>
                 </div>
             @else
-                <div class="cart-empty text-center py-5">
-                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
-                    <p class="text-muted mb-1">Ваша корзина пуста</p>
-                    <p class="small text-muted">Добавьте товары из каталога</p>
-                    <button class="btn btn-primary mt-3" data-bs-dismiss="offcanvas">
-                        Начать покупки
+                <div class="cart-empty text-center py-5" style="padding: 3rem 1.5rem;">
+                    <i class="fas fa-shopping-cart fa-3x mb-4" style="color: #e5e5e5;"></i>
+                    <h6
+                        style="font-family: 'Oswald', sans-serif; font-size: 24px; letter-spacing: 2px; margin-bottom: 0.5rem; color: #0f0f10;">
+                        КОРЗИНА ПУСТА
+                    </h6>
+                    <p
+                        style="color: #777; letter-spacing: 0.5px; margin-bottom: 2rem; font-family: 'Oswald', sans-serif;">
+                        Добавьте товары из каталога
+                    </p>
+                    <button class="btn-close-cart" data-bs-dismiss="offcanvas"
+                        style="background: #0f0f10; color: white; border: none; padding: 1rem 2rem; font-family: 'Oswald', sans-serif; font-size: 18px; letter-spacing: 2px; cursor: pointer;">
+                        НАЧАТЬ ПОКУПКИ
                     </button>
                 </div>
             @endif
         </div>
     </div>
+
+    <style>
+        .offcanvas {
+            border-left: 1px solid #e5e5e5 !important;
+        }
+
+        .offcanvas-header {
+            background: #fff;
+        }
+
+        .offcanvas,
+        .offcanvas-header,
+        .offcanvas-body,
+        .btn-close-cart:hover {
+            border-radius: 0 !important;
+
+        }
+
+        .quantity-controls button:hover {
+            background: #f5f5f5 !important;
+        }
+
+        .btn-close-cart:hover {
+            background: #7FFF00 !important;
+            border-color: #0f0f10 !important;
+        }
+
+        .offcanvas-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .offcanvas-body::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+
+        .offcanvas-body::-webkit-scrollbar-thumb {
+            background: #0f0f10;
+        }
+
+        .offcanvas-body::-webkit-scrollbar-thumb:hover {
+            background: #333;
+        }
+
+        .cart-item {
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-item:hover {
+            opacity: 0.9;
+        }
+
+        button {
+            transition: all 0.3s ease !important;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .quantity-controls button:disabled {
+            cursor: not-allowed;
+            opacity: 0.3;
+        }
+
+        .quantity-controls button:disabled:hover {
+            background: transparent !important;
+        }
+    </style>
 </div>

@@ -1,284 +1,185 @@
-<div>
+<div class="shopmi-page shopmi-animate-in">
     @if (!$category)
-        <div class="container-wide py-4 text-center">
-            <div class="alert alert-danger">
-                <h4>Категория не найдена</h4>
-                <p>Запрошенная категория не существует.</p>
-                <a href="{{ route('home') }}" class="btn btn-primary" wire:navigate>
-                    <i class="fas fa-home me-2"></i>На главную
+        <div class="shopmi-shell">
+            <div class="shopmi-empty">
+                <i class="fas fa-folder-open fa-3x"></i>
+                <h1 class="shopmi-title">Категория не найдена</h1>
+                <p class="shopmi-subtitle mx-auto">Такой категории нет или ссылка устарела.</p>
+                <a href="{{ route('home') }}" class="shopmi-btn mt-4" wire:navigate>
+                    <i class="fas fa-home"></i> На главную
                 </a>
             </div>
         </div>
     @else
-        <div class="container-wide py-4">
-            {{-- ========== ХЛЕБНЫЕ КРОШКИ ========== --}}
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('home') }}" wire:navigate>Главная</a>
+        <div class="shopmi-shell">
+            <ol class="shopmi-breadcrumb">
+                <li><a href="{{ route('home') }}" wire:navigate>Главная</a></li>
+                @if ($category->parent)
+                    <li>
+                        <a href="{{ route('category', $category->parent->slug) }}" wire:navigate>
+                            {{ $category->parent->title }}
+                        </a>
                     </li>
-                    @if ($category->parent)
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('category', $category->parent->slug) }}" wire:navigate>
-                                {{ $category->parent->title }}
-                            </a>
-                        </li>
-                    @endif
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ $category->title }}
-                    </li>
-                </ol>
-            </nav>
+                @endif
+                <li class="active">{{ $category->title }}</li>
+            </ol>
 
-            <div class="row">
-                {{-- ========== ЛЕВАЯ КОЛОНКА - ИНФОРМАЦИЯ О КАТЕГОРИИ И ФИЛЬТРЫ ========== --}}
-                <div class="col-md-3">
-                    {{-- КАРТОЧКА КАТЕГОРИИ --}}
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-body text-center">
-                            <div wire:loading class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Загрузка...</span>
-                                </div>
-                                <p class="mt-2 small text-muted">Обновление...</p>
+            <header class="shopmi-page-head">
+                <p class="shopmi-kicker mb-0">Каталог / {{ $products->total() }} товаров</p>
+                <h1 class="shopmi-heading">{{ $category->title }}</h1>
+                @if ($category->description)
+                    <p class="shopmi-subtitle">{{ $category->description }}</p>
+                @else
+                    <p class="shopmi-subtitle">Подборка товаров с фильтрами, сортировкой и быстрым добавлением в корзину.</p>
+                @endif
+            </header>
+
+            <div class="row g-4 align-items-start">
+                <aside class="col-lg-3">
+                    <div class="shopmi-panel mb-4">
+                        <h2 class="shopmi-filter-title">Фильтры</h2>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input wire:model.live="inStock" class="form-check-input" type="checkbox" id="inStock">
+                                <label class="form-check-label" for="inStock">Только в наличии</label>
                             </div>
+                        </div>
 
-                            {{-- ОСНОВНОЙ КОНТЕНТ (скрывается при загрузке) --}}
-                            <div wire:loading.remove wire:target="minPrice,maxPrice,sortBy">
-                                <div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center"
-                                    style="height: 150px;">
-                                    <i class="fas fa-folder fa-3x text-muted"></i>
+                        <div class="mb-4">
+                            <label class="form-label shopmi-kicker">Цена</label>
+                            <div class="row g-2">
+                                <div class="col">
+                                    <input type="number" class="form-control shopmi-input" placeholder="От"
+                                        wire:model.live="minPrice" min="0">
                                 </div>
-                                <h5 class="card-title">{{ $category->title }}</h5>
-                                @if ($category->description)
-                                    <p class="card-text text-muted small">{{ $category->description }}</p>
-                                @endif
-                                <div class="text-muted small">
-                                    <i class="fas fa-box me-1"></i> Товаров: {{ $products->total() }}
+                                <div class="col">
+                                    <input type="number" class="form-control shopmi-input" placeholder="До"
+                                        wire:model.live="maxPrice" min="0">
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- ФИЛЬТРЫ --}}
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light">
-                            <h6 class="card-title mb-0">
-                                <i class="fas fa-filter me-2"></i>Фильтры
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            {{-- Фильтр по цене --}}
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Цена, руб.</label>
-                                <div class="row g-2">
-                                    <div class="col">
-                                        <input type="number" class="form-control form-control-sm" placeholder="От"
-                                            wire:model.live="minPrice" min="0">
-                                    </div>
-                                    <div class="col">
-                                        <input type="number" class="form-control form-control-sm" placeholder="До"
-                                            wire:model.live="maxPrice" min="0">
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- ДИНАМИЧЕСКИЕ ФИЛЬТРЫ ИЗ БАЗЫ --}}
-                            @if (isset($category_filters) && $category_filters->count() > 0)
-                                @foreach ($category_filters->groupBy('group_title') as $group_title => $filter_group)
-                                    <div class="filter-block mb-4" wire:key="{{ $group_title }}">
-                                        <h6 class="section-title small fw-bold mb-3">
-                                            <span>Filter by {{ $group_title }}</span>
-                                        </h6>
-                                        <div class="filter-group">
-                                            @foreach ($filter_group as $filter)
-                                                <div class="form-check d-flex justify-content-between mb-2"
-                                                    wire:key="{{ $filter->filter_id }}">
-                                                    <div>
-                                                        <input wire:model.live="selected_filters"
-                                                            class="form-check-input" type="checkbox"
-                                                            value="{{ $filter->filter_id }}"
-                                                            id="filter_{{ $filter->filter_id }}">
-                                                        <label class="form-check-label small"
-                                                            for="filter_{{ $filter->filter_id }}">
-                                                            {{ $filter->filter }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                        @if (isset($category_filters) && $category_filters->count() > 0)
+                            @foreach ($category_filters->groupBy('group_title') as $group_title => $filter_group)
+                                <div class="mb-4" wire:key="{{ $group_title }}">
+                                    <h3 class="shopmi-kicker fs-5">{{ $group_title }}</h3>
+                                    @foreach ($filter_group as $filter)
+                                        <div class="form-check mb-2" wire:key="{{ $filter->filter_id }}">
+                                            <input wire:model.live="selected_filters" class="form-check-input"
+                                                type="checkbox" value="{{ $filter->filter_id }}"
+                                                id="filter_{{ $filter->filter_id }}">
+                                            <label class="form-check-label" for="filter_{{ $filter->filter_id }}">
+                                                {{ $filter->filter }}
+                                            </label>
                                         </div>
-                                    </div>
-                                @endforeach
-                            @endif
-
-                            {{-- Сортировка --}}
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Сортировка</label>
-                                <select class="form-select form-select-sm" wire:model.live="sort">
-                                    @foreach ($sortList as $k => $item)
-                                        <option value="{{ $k }}" wire:key="{{ $k }}">
-                                            {{ $item['title'] }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            {{-- ЛИМИТ ТОВАРОВ НА СТРАНИЦЕ --}}
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold">Товаров на странице</label>
-                                <select class="form-select form-select-sm" wire:model.live="limit">
-                                    @foreach ($limitList as $item)
-                                        <option value="{{ $item }}" wire:key="{{ $item }}">
-                                            {{ $item }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            {{-- Кнопка сброса --}}
-                            <button class="btn btn-outline-secondary btn-sm w-100" wire:click="resetFilters">
-                                <i class="fas fa-redo me-1"></i>Сбросить фильтры
-                            </button>
-                        </div>
-                    </div>
-
-                    {{-- ПОДКАТЕГОРИИ (если есть) --}}
-                    @if ($category->children && $category->children->count() > 0)
-                        <div class="card shadow-sm mt-4">
-                            <div class="card-header bg-light">
-                                <h6 class="card-title mb-0">
-                                    <i class="fas fa-folder-tree me-2"></i>Подкатегории
-                                </h6>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="list-group list-group-flush">
-                                    @foreach ($category->children as $child)
-                                        <a href="{{ route('category', $child->slug) }}"
-                                            class="list-group-item list-group-item-action small d-flex justify-content-between align-items-center"
-                                            wire:navigate>
-                                            {{ $child->title }}
-                                            <span
-                                                class="badge bg-primary rounded-pill">{{ $child->products_count ?? 0 }}</span>
-                                        </a>
                                     @endforeach
                                 </div>
+                            @endforeach
+                        @endif
+
+                        <div class="mb-3">
+                            <label class="form-label shopmi-kicker">Сортировка</label>
+                            <select class="form-select shopmi-select" wire:model.live="sort">
+                                @foreach ($sortList as $k => $item)
+                                    <option value="{{ $k }}" wire:key="{{ $k }}">{{ $item['title'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label shopmi-kicker">На странице</label>
+                            <select class="form-select shopmi-select" wire:model.live="limit">
+                                @foreach ($limitList as $item)
+                                    <option value="{{ $item }}" wire:key="{{ $item }}">{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <button class="shopmi-btn shopmi-btn-outline w-100" wire:click="resetFilters">
+                            <i class="fas fa-rotate-left"></i> Сбросить
+                        </button>
+                    </div>
+
+                    @if ($category->children && $category->children->count() > 0)
+                        <div class="shopmi-panel">
+                            <h2 class="shopmi-filter-title">Подкатегории</h2>
+                            <div class="d-grid gap-2">
+                                @foreach ($category->children as $child)
+                                    <a href="{{ route('category', $child->slug) }}" class="shopmi-btn shopmi-btn-outline justify-content-between" wire:navigate>
+                                        <span>{{ $child->title }}</span>
+                                        <span>{{ $child->products_count ?? 0 }}</span>
+                                    </a>
+                                @endforeach
                             </div>
                         </div>
                     @endif
-                </div>
+                </aside>
 
-                {{-- ========== ПРАВАЯ КОЛОНКА - ТОВАРЫ ========== --}}
-                <div class="col-md-9">
-                    {{-- ЗАГОЛОВОК И ИНФОРМАЦИЯ --}}
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h1 class="h3 mb-1">{{ $category->title }}</h1>
-                            <p class="text-muted mb-0">
-                                <i class="fas fa-search me-1"></i>Найдено товаров: {{ $products->total() }}
-                            </p>
+                <section class="col-lg-9">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                        <div class="shopmi-stat">
+                            Найдено: {{ $products->total() }}
                         </div>
-
-                        {{-- ВИД ОТОБРАЖЕНИЯ И СОРТИРОВКА --}}
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="text-muted small">
-                                Сортировка:
-                                <span class="fw-bold">
-                                    {{ $sortList[$sort]['title'] ?? 'По умолчанию' }}
-                                </span>
-                            </div>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button type="button" class="btn btn-outline-secondary active" title="Сетка">
-                                    <i class="fas fa-th"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary" title="Список">
-                                    <i class="fas fa-list"></i>
-                                </button>
-                            </div>
+                        <div class="text-muted">
+                            {{ $sortList[$sort]['title'] ?? 'Default' }}
                         </div>
                     </div>
 
-
-                    {{-- АКТИВНЫЕ ФИЛЬТРЫ --}}
                     @if ($minPrice || $maxPrice || (isset($selected_filters) && count($selected_filters) > 0))
-                        <div class="alert alert-light d-flex align-items-center justify-content-between mb-4 py-2">
-                            <div>
-                                <small class="fw-bold">Активные фильтры:</small>
+                        <div class="shopmi-panel d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 py-3">
+                            <div class="d-flex flex-wrap gap-2">
                                 @if ($minPrice)
-                                    <span class="badge bg-primary ms-2">От {{ $minPrice }} руб.</span>
+                                    <span class="badge text-bg-dark rounded-0">От {{ $minPrice }}</span>
                                 @endif
                                 @if ($maxPrice)
-                                    <span class="badge bg-primary ms-2">До {{ $maxPrice }} руб.</span>
+                                    <span class="badge text-bg-dark rounded-0">До {{ $maxPrice }}</span>
                                 @endif
                                 @if (isset($selected_filters) && count($selected_filters) > 0)
                                     @foreach ($selected_filters as $filterId)
-                                        @php
-                                            $filter = $category_filters->firstWhere('filter_id', $filterId);
-                                        @endphp
+                                        @php $filter = $category_filters->firstWhere('filter_id', $filterId); @endphp
                                         @if ($filter)
-                                            <span class="badge bg-info ms-2">{{ $filter->filter }}</span>
+                                            <span class="badge text-bg-light rounded-0 border">{{ $filter->filter }}</span>
                                         @endif
                                     @endforeach
                                 @endif
                             </div>
-                            <button class="btn btn-sm btn-outline-danger" wire:click="resetFilters">
-                                <i class="fas fa-times me-1"></i>Очистить
+                            <button class="shopmi-btn shopmi-btn-outline" wire:click="resetFilters">
+                                Очистить
                             </button>
                         </div>
                     @endif
-                    {{-- СЕТКА ТОВАРОВ --}}
+
+                    <div wire:loading class="shopmi-panel text-center mb-4">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Загрузка...</span>
+                        </div>
+                    </div>
+
                     @if ($products->count() > 0)
                         <div class="row g-4">
                             @foreach ($products as $product)
-                                <div class="col-xl-3 col-lg-4 col-md-6">
+                                <div class="col-xl-4 col-md-6">
                                     @include('incs.product-card', ['product' => $product])
                                 </div>
                             @endforeach
                         </div>
 
-                        {{-- ПАГИНАЦИЯ --}}
                         <div class="mt-5 d-flex justify-content-center">
                             {{ $products->links() }}
                         </div>
                     @else
-                        {{-- СООБЩЕНИЕ ЕСЛИ ТОВАРОВ НЕТ --}}
-                        <div class="text-center py-5">
-                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">Товары не найдены</h4>
-                            <p class="text-muted mb-4">Попробуйте изменить параметры фильтрации или выбрать другую
-                                категорию</p>
-                            <div class="d-flex gap-2 justify-content-center">
-                                <button class="btn btn-primary" wire:click="resetFilters">
-                                    <i class="fas fa-redo me-2"></i>Сбросить фильтры
-                                </button>
-                                <a href="{{ route('home') }}" class="btn btn-outline-secondary" wire:navigate>
-                                    <i class="fas fa-home me-2"></i>На главную
-                                </a>
-                            </div>
+                        <div class="shopmi-empty">
+                            <i class="fas fa-search fa-3x"></i>
+                            <h2 class="shopmi-title">Ничего не найдено</h2>
+                            <p class="shopmi-subtitle mx-auto">Попробуйте убрать часть фильтров или выбрать другую категорию.</p>
+                            <button class="shopmi-btn mt-4" wire:click="resetFilters">
+                                <i class="fas fa-rotate-left"></i> Сбросить фильтры
+                            </button>
                         </div>
                     @endif
-                </div>
+                </section>
             </div>
         </div>
     @endif
-
-    {{-- СКРИПТ ДЛЯ ПЛАВНОЙ ПРОКРУТКИ ПРИ ПАГИНАЦИИ --}}
-    <script>
-        document.addEventListener('livewire:init', () => {
-            // Для плавной прокрутки
-            Livewire.on('page-changed', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-
-            // Для обновления title (ПРАВИЛЬНЫЙ СИНТАКСИС)
-            Livewire.on('page-updated', (event) => {
-                console.log('Page updated event:', event);
-                if (event && event.title) {
-                    document.title = event.title;
-                }
-            });
-        });
-    </script>
 </div>

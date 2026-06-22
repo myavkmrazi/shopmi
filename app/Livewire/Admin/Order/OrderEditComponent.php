@@ -11,18 +11,24 @@ use App\Models\Order;
 class OrderEditComponent extends Component
 {
     public Order $order;
-    public bool $status;
+    public string $status;
 
     public function mount(Order $order){
         $this->order = $order;
-        $this->status = $order->status;
+        $this->status = $order->status ?: 'new';
     }
     public function updatedStatus()
     {
-       $this->order->setAttribute('status',$this->status)->save();
+        $this->validate([
+            'status' => 'required|in:' . implode(',', array_keys(Order::STATUSES)),
+        ]);
+
+        $this->order->setAttribute('status', $this->status)->save();
     }
     public function render()
     {
-        return view('livewire.admin.order.order-edit-component');
+        return view('livewire.admin.order.order-edit-component', [
+            'statuses' => Order::STATUSES,
+        ]);
     }
 }

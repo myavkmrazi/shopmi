@@ -18,9 +18,7 @@ class OrderClient extends Mailable
     public int $order_id;
     public string $note;
 
-    /**
-     * Create a new message instance.
-     */
+
     public function __construct(array $cart, int $total, int $order_id, string $note = '')
     {
         $this->cart = $cart;
@@ -29,9 +27,7 @@ class OrderClient extends Mailable
         $this->note = $note;
     }
 
-    /**
-     * Get the message envelope.
-     */
+
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -40,9 +36,7 @@ class OrderClient extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
+
     public function content(): Content
     {
         return new Content(

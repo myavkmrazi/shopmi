@@ -15,7 +15,7 @@ class CartIconComponent extends Component
         $this->updateCartCount();
     }
 
-    #[On('cart-updated')] // ← ТОЛЬКО ЭТОТ ПОДХОД
+    #[On('cart-updated')] 
     public function updateCartCount()
     {
         $this->cartCount = Cart::getCartQuantityItems();

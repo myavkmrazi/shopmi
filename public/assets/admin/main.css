@@ -1,19 +1,198 @@
+:root {
+    --shopmi-ink: #0f0f10;
+    --shopmi-muted: #767676;
+    --shopmi-line: #e5e5e5;
+    --shopmi-soft: #f7f7f4;
+    --shopmi-paper: #ffffff;
+    --shopmi-accent: #b8ff2c;
+    --shopmi-display: 'Oswald', 'Bebas Neue', Impact, sans-serif;
+    --shopmi-text: 'Inter', Arial, sans-serif;
+    --checkbox-size: 20px;
+    --checkbox-border: #cbd5e0;
+    --checkbox-checked: var(--shopmi-ink);
+    --checkbox-shadow: rgba(0, 0, 0, 0.1);
+    --animation-speed: 0.3s;
+}
+
+body#page-top {
+    font-family: var(--shopmi-text);
+    background: var(--shopmi-soft);
+    color: var(--shopmi-ink);
+}
+
+.sidebar {
+    background: var(--shopmi-ink) !important;
+    background-image: none !important;
+}
+
+.sidebar .sidebar-brand {
+    padding: 1.25rem 1rem;
+}
+
+.sidebar .sidebar-brand-text {
+    font-family: var(--shopmi-display);
+    letter-spacing: 2px;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+}
+
+.sidebar .sidebar-brand-icon {
+    display: none;
+}
+
+.sidebar .nav-item .nav-link {
+    font-family: var(--shopmi-display);
+    letter-spacing: .5px;
+    font-size: .95rem;
+}
+
+.sidebar .nav-item.active .nav-link,
+.sidebar .nav-item .nav-link:hover {
+    color: var(--shopmi-accent) !important;
+}
+
+.sidebar .nav-item.active .nav-link {
+    font-weight: 600;
+}
+
+.sidebar hr.sidebar-divider {
+    border-top-color: rgba(255, 255, 255, .12);
+}
+
+.topbar {
+    border-bottom: 1px solid var(--shopmi-line);
+    box-shadow: none !important;
+}
+
+.topbar .nav-link,
+.topbar .text-gray-600 {
+    color: var(--shopmi-ink) !important;
+    font-family: var(--shopmi-display);
+    letter-spacing: .5px;
+}
+
+#content .container-fluid > h1.h3 {
+    font-family: var(--shopmi-display);
+    letter-spacing: 1px;
+    color: var(--shopmi-ink);
+    font-size: 2rem;
+    margin-bottom: 1.5rem !important;
+}
+
+.card {
+    border-radius: 0;
+    border: 1px solid var(--shopmi-line);
+    box-shadow: none !important;
+}
+
+.card .card-header {
+    background: var(--shopmi-paper);
+    border-bottom: 1px solid var(--shopmi-line);
+    font-family: var(--shopmi-display);
+    letter-spacing: .5px;
+}
+
+.btn-primary {
+    background-color: var(--shopmi-ink);
+    border-color: var(--shopmi-ink);
+    border-radius: 0;
+    font-family: var(--shopmi-display);
+    letter-spacing: .5px;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--shopmi-accent);
+    border-color: var(--shopmi-accent);
+    color: var(--shopmi-ink);
+}
+
+.btn-success {
+    background-color: var(--shopmi-accent);
+    border-color: var(--shopmi-ink);
+    color: var(--shopmi-ink);
+    border-radius: 0;
+}
+
+.btn-success:hover {
+    background-color: var(--shopmi-ink);
+    border-color: var(--shopmi-ink);
+    color: #fff;
+}
+
+.form-control,
+.custom-select,
+select.form-control {
+    border-radius: 0;
+    border-color: var(--shopmi-line);
+    min-height: 42px;
+}
+
+.form-control:focus,
+.custom-select:focus {
+    border-color: var(--shopmi-ink);
+    box-shadow: 0 0 0 3px rgba(184, 255, 44, .35);
+}
+
+.table {
+    color: var(--shopmi-ink);
+}
+
+.table thead th {
+    font-family: var(--shopmi-display);
+    letter-spacing: .5px;
+    color: var(--shopmi-muted);
+    border-bottom-color: var(--shopmi-line);
+}
+
+.border-left-primary {
+    border-left: 4px solid var(--shopmi-ink) !important;
+}
+
+.border-left-success {
+    border-left: 4px solid var(--shopmi-accent) !important;
+}
+
+.border-left-info {
+    border-left: 4px solid var(--shopmi-muted) !important;
+}
+
+.border-left-warning {
+    border-left: 4px solid #f59e0b !important;
+}
+
+.text-primary {
+    color: var(--shopmi-ink) !important;
+}
+
+.text-success {
+    color: #3d7a00 !important;
+}
+
+.sticky-footer {
+    border-top: 1px solid var(--shopmi-line);
+}
+
+.scroll-to-top {
+    background: var(--shopmi-ink);
+}
+
+.scroll-to-top:hover {
+    background: var(--shopmi-accent);
+    color: var(--shopmi-ink);
+}
+
+.dropdown-menu {
+    border-radius: 0;
+    border: 1px solid var(--shopmi-line);
+}
+
 label.required::before {
     content: '*';
     color: #dc3545;
     font-weight: bold;
 }
 
-/* Анимированные чекбоксы для страницы редактирования заказов */
-:root {
-    --checkbox-size: 20px;
-    --checkbox-border: #cbd5e0;
-    --checkbox-checked: #4f46e5;
-    --checkbox-shadow: rgba(0, 0, 0, 0.1);
-    --animation-speed: 0.3s;
-}
-
-/* Базовый стиль для кастомных чекбоксов */
 .custom-checkbox {
     position: relative;
     display: inline-block;
@@ -22,7 +201,6 @@ label.required::before {
     margin-right: 8px;
 }
 
-/* Скрываем нативный чекбокс */
 .custom-checkbox input {
     position: absolute;
     opacity: 0;
@@ -31,7 +209,6 @@ label.required::before {
     width: 0;
 }
 
-/* Кастомный вид чекбокса */
 .checkbox-checkmark {
     position: relative;
     display: inline-block;
@@ -39,32 +216,22 @@ label.required::before {
     height: var(--checkbox-size);
     background-color: #fff;
     border: 2px solid var(--checkbox-border);
-    border-radius: 4px;
+    border-radius: 0;
     transition: all var(--animation-speed) ease;
     box-shadow: 0 2px 4px var(--checkbox-shadow);
 }
 
-/* Ховер эффект */
 .custom-checkbox:hover .checkbox-checkmark {
     border-color: var(--checkbox-checked);
-    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+    box-shadow: 0 4px 8px rgba(15, 15, 16, 0.12);
     transform: translateY(-1px);
 }
 
-/* Активное состояние (нажатие) */
-.custom-checkbox:active .checkbox-checkmark {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px var(--checkbox-shadow);
-}
-
-/* Отмеченный чекбокс */
 .custom-checkbox input:checked~.checkbox-checkmark {
     background-color: var(--checkbox-checked);
     border-color: var(--checkbox-checked);
-    animation: checkbox-check 0.4s ease;
 }
 
-/* Галочка внутри чекбокса */
 .checkbox-checkmark::after {
     content: "";
     position: absolute;
@@ -79,51 +246,18 @@ label.required::before {
     transition: transform var(--animation-speed) ease;
 }
 
-/* Показываем галочку при checked */
 .custom-checkbox input:checked~.checkbox-checkmark::after {
     display: block;
     transform: translate(-50%, -50%) rotate(45deg) scale(1);
 }
 
-/* Анимация при отметке */
-@keyframes checkbox-check {
-    0% {
-        transform: scale(0.8);
-        opacity: 0.7;
-    }
-
-    50% {
-        transform: scale(1.1);
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* Отключенный чекбокс */
-.custom-checkbox input:disabled~.checkbox-checkmark {
-    background-color: #f7fafc;
-    border-color: #e2e8f0;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.custom-checkbox input:disabled:checked~.checkbox-checkmark {
-    background-color: #a0aec0;
-    border-color: #a0aec0;
-}
-
-/* Текст рядом с чекбоксом */
 .checkbox-label {
     margin-left: 8px;
-    color: #4a5568;
+    color: var(--shopmi-muted);
     font-size: 14px;
     vertical-align: middle;
 }
 
-/* Контейнер для группы чекбоксов */
 .checkbox-group {
     display: flex;
     flex-direction: column;
@@ -131,139 +265,8 @@ label.required::before {
     margin: 16px 0;
 }
 
-.checkbox-group-horizontal {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: center;
-}
-
-/* Чекбокс с переключателем (toggle) */
-.checkbox-toggle {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.checkbox-toggle input {
-    display: none;
-}
-
-.toggle-slider {
-    position: relative;
-    width: 50px;
-    height: 26px;
-    background-color: #e2e8f0;
-    border-radius: 34px;
-    transition: background-color 0.3s;
-    margin-right: 10px;
-}
-
-.toggle-slider:before {
-    content: "";
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    left: 2px;
-    top: 2px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.3s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.checkbox-toggle input:checked+.toggle-slider {
-    background-color: #10b981;
-}
-
-.checkbox-toggle input:checked+.toggle-slider:before {
-    transform: translateX(24px);
-}
-
-.checkbox-toggle input:disabled+.toggle-slider {
-    background-color: #cbd5e0;
-    cursor: not-allowed;
-}
-
-.toggle-label {
-    color: #4a5568;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-/* Анимированный чекбокс с эффектом пульсации */
-.checkbox-pulse input:checked~.checkbox-checkmark {
-    animation: pulse 0.5s ease;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
-    }
-}
-
-/* Чекбокс для статусов заказов */
-.order-status-checkbox .checkbox-checkmark {
-    border-radius: 50%;
-}
-
-.order-status-checkbox input:checked~.checkbox-checkmark {
-    background-color: #10b981;
-    border-color: #10b981;
-}
-
-/* Цветные варианты чекбоксов */
-.checkbox-primary .checkbox-checkmark {
-    border-color: #4f46e5;
-}
-
-.checkbox-primary input:checked~.checkbox-checkmark {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
-}
-
-.checkbox-success .checkbox-checkmark {
-    border-color: #10b981;
-}
-
-.checkbox-success input:checked~.checkbox-checkmark {
-    background-color: #10b981;
-    border-color: #10b981;
-}
-
-.checkbox-warning .checkbox-checkmark {
-    border-color: #f59e0b;
-}
-
-.checkbox-warning input:checked~.checkbox-checkmark {
-    background-color: #f59e0b;
-    border-color: #f59e0b;
-}
-
-.checkbox-danger .checkbox-checkmark {
-    border-color: #ef4444;
-}
-
-.checkbox-danger input:checked~.checkbox-checkmark {
-    background-color: #ef4444;
-    border-color: #ef4444;
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
     :root {
         --checkbox-size: 18px;
-    }
-
-    .checkbox-group-horizontal {
-        gap: 12px;
     }
 }

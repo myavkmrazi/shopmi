@@ -28,6 +28,17 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="surname" class="form-label required">Surname</label>
+                        <input type="text" class="form-control @error('surname') is-invalid @enderror" id="surname"
+                            placeholder="Surname" wire:model="surname">
+                        @error('surname')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label for="email" class="form-label required">Email</label>
                         <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
                             placeholder="Email" wire:model="email">
@@ -103,7 +114,7 @@
                                 @foreach ($user_orders as $order)
                                     <tr wire:key="{{ $order->id }}">
                                         <td>${{ $order->id }}</td>
-                                        <td>{{ $order->status ? 'Completed' : 'New' }}</td>
+                                        <td>{{ $order->statusLabel() }}</td>
                                         <td>${{ $order->total }}</td>
                                         <td>{{ $order->created_at }}</td>
                                         <td>{{ $order->updated_at }}</td>
