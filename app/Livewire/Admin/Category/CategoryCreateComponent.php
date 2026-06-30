@@ -14,9 +14,10 @@ use Livewire\Component;
 #[Title('Create Category')]
 class CategoryCreateComponent extends Component
 {
-
     public string $title;
+
     public $parent_id = 0;
+
     public array $selectedCategoryFilters = [];
 
     public function save()
@@ -30,7 +31,7 @@ class CategoryCreateComponent extends Component
         try {
             DB::beginTransaction();
             $category = Category::query()->create($validated);
-            if (!empty($validated['selectedCategoryFilters'])) {
+            if (! empty($validated['selectedCategoryFilters'])) {
                 $data = [];
                 foreach ($validated['selectedCategoryFilters'] as $category_filter) {
                     $data[] = [
@@ -55,6 +56,7 @@ class CategoryCreateComponent extends Component
     public function render()
     {
         $filter_groups = FilterGroup::all();
+
         return view('livewire.admin.category.category-create-component', compact('filter_groups'));
     }
 }

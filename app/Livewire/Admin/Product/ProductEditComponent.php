@@ -17,24 +17,37 @@ use Livewire\WithFileUploads;
 #[Title('Edit Product')]
 class ProductEditComponent extends Component
 {
-
     use WithFileUploads;
 
     public Product $product;
+
     public string $title;
+
     public $category_id;
+
     public array $selectedFilters = [];
+
     public int $price = 0;
+
     public int $old_price = 0;
+
     public int $stock = 100;
+
     public bool $is_hit = false;
+
     public bool $is_new = false;
+
     public ?string $excerpt;
+
     public ?string $content;
+
     public $photo;
+
     public $photos;
+
     #[Validate]
     public $image;
+
     #[Validate]
     public $gallery;
 
@@ -68,7 +81,7 @@ class ProductEditComponent extends Component
     {
         $filter_groups = [];
         if ($this->category_id) {
-            $ids = \App\Helpers\Category\Category::getIds($this->category_id) . $this->category_id;
+            $ids = \App\Helpers\Category\Category::getIds($this->category_id).$this->category_id;
             $category_filters = DB::table('category_filters')
                 ->select('category_filters.filter_group_id', 'filter_groups.title', 'filters.id as filter_id', 'filters.title as filter_title')
                 ->join('filter_groups', 'category_filters.filter_group_id', '=', 'filter_groups.id')
@@ -80,6 +93,7 @@ class ProductEditComponent extends Component
                 $filter_groups[$filter->filter_group_id][] = $filter;
             }
         }
+
         return $filter_groups;
     }
 
@@ -104,16 +118,16 @@ class ProductEditComponent extends Component
     public function save()
     {
         $validated = $this->validate();
-        $folders = date('Y') . '/' . date('m') . '/' . date('d');
-        if (!empty($validated['image'])) {
-            $validated['image'] = "uploads/" . $validated['image']->store($folders, 'public_uploads');
+        $folders = date('Y').'/'.date('m').'/'.date('d');
+        if (! empty($validated['image'])) {
+            $validated['image'] = 'uploads/'.$validated['image']->store($folders, 'public_uploads');
         } else {
             $validated['image'] = $this->photo;
         }
 
-        if (!empty($validated['gallery'])) {
+        if (! empty($validated['gallery'])) {
             foreach ($validated['gallery'] as $k => $photo) {
-                $validated['gallery'][$k] = "uploads/" . $photo->store($folders, 'public_uploads');
+                $validated['gallery'][$k] = 'uploads/'.$photo->store($folders, 'public_uploads');
             }
             $validated['gallery'] = array_merge($validated['gallery'], $this->photos);
         } else {
@@ -128,7 +142,7 @@ class ProductEditComponent extends Component
                 ->where('product_id', '=', $this->product->id)
                 ->delete();
 
-            if (!empty($validated['selectedFilters'])) {
+            if (! empty($validated['selectedFilters'])) {
                 $filter_groups = Filter::query()
                     ->whereIn('id', $validated['selectedFilters'])->get();
                 $data = [];

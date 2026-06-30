@@ -14,13 +14,21 @@ use Livewire\Component;
 class CheckoutComponent extends Component
 {
     public string $name = '';
+
     public string $surname = '';
+
     public string $email = '';
+
     public string $phone = '';
+
     public string $city = '';
+
     public string $address = '';
+
     public string $payment_method = 'cash';
+
     public string $note = '';
+
     public bool $agreed = false;
 
     public function mount()
@@ -97,49 +105,51 @@ class CheckoutComponent extends Component
 
             $order->orderProducts()->createMany($orderProducts);
 
-            try {
-                Mail::to($validated['email'])->send(new OrderClient(
-                    $cart,
-                    $total,
-                    $order->id,
-                    $validated['note'] ?? ''
-                ));
-                Log::info('Order client email sent');
-            } catch (\Exception $mailException) {
-                Log::warning('Order client email failed: ' . $mailException->getMessage());
-            }
-
-            try {
-                Mail::to('manager@laravel-myavka.ru')->send(new OrderManager($order->id));
-                Log::info('Order manager email sent');
-            } catch (\Exception $mailException) {
-                Log::warning('Order manager email failed: ' . $mailException->getMessage());
-            }
-
-            session([
-                'cart' => [],
-                'checkout_success_order_id' => $order->id,
-            ]);
-            $this->dispatch('cart-updated');
-
             DB::commit();
-
-            return $this->redirectRoute('checkout.success', navigate: true);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Order checkout failed: ' . $e->getMessage());
-            Log::error('Trace: ' . $e->getTraceAsString());
+            Log::error('Order checkout failed: '.$e->getMessage());
+            Log::error('Trace: '.$e->getTraceAsString());
 
             $this->js("
                 toastr.error('Order checkout failed');
-                console.error('Order checkout failed:', " . json_encode([
-                    'message' => $e->getMessage(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                ]) . ");
-            ");
+                console.error('Order checkout failed:', ".json_encode([
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]).');
+            ');
+
+            return;
         }
+
+        session([
+            'cart' => [],
+            'checkout_success_order_id' => $order->id,
+        ]);
+        $this->dispatch('cart-updated');
+
+        try {
+            Mail::to($validated['email'])->send(new OrderClient(
+                $cart,
+                $total,
+                $order->id,
+                $validated['note'] ?? ''
+            ));
+            Log::info('Order client email sent');
+        } catch (\Exception $mailException) {
+            Log::warning('Order client email failed: '.$mailException->getMessage());
+        }
+
+        try {
+            Mail::to('manager@laravel-myavka.ru')->send(new OrderManager($order->id));
+            Log::info('Order manager email sent');
+        } catch (\Exception $mailException) {
+            Log::warning('Order manager email failed: '.$mailException->getMessage());
+        }
+
+        return $this->redirectRoute('checkout.success', navigate: true);
     }
 
     public function render()

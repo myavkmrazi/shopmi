@@ -17,6 +17,7 @@ trait CartTrait
 
         if ($result['success']) {
             $this->dispatch('cart-updated');
+            $this->dispatch('open-cart');
             $this->dispatch('showToast', message: $result['message'], type: 'success');
 
             return true;

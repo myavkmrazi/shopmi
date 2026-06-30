@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Cart;
 
-use Livewire\Component;
-use Livewire\Attributes\On;
 use App\Helpers\Cart\Cart;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class CartIconComponent extends Component
 {
@@ -15,7 +15,7 @@ class CartIconComponent extends Component
         $this->updateCartCount();
     }
 
-    #[On('cart-updated')] 
+    #[On('cart-updated')]
     public function updateCartCount()
     {
         $this->cartCount = Cart::getCartQuantityItems();

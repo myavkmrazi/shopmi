@@ -3,23 +3,25 @@
 namespace App\Livewire\Admin\Category;
 
 use App\Models\Category;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 #[Layout('components.layouts.admin')]
 #[Title('Edit Category')]
 class CategoryEditComponent extends Component
 {
-
     public Category $category;
-    public string $title;
-    public $parent_id = 0;
-    public $id;
-    public $selectedCategoryFilters = [];
 
+    public string $title;
+
+    public $parent_id = 0;
+
+    public $id;
+
+    public $selectedCategoryFilters = [];
 
     public function mount(Category $category)
     {
@@ -31,8 +33,6 @@ class CategoryEditComponent extends Component
             ->where('category_id', '=', $this->category->id)
             ->pluck('filter_group_id')
             ->toArray();
-
-
 
     }
 
@@ -49,7 +49,7 @@ class CategoryEditComponent extends Component
             $this->category->update($validated);
             DB::table('category_filters')->where('category_id', '=', $this->category->id)
                 ->delete();
-            if (!empty($validated['selectedCategoryFilters'])) {
+            if (! empty($validated['selectedCategoryFilters'])) {
                 $data = [];
                 foreach ($validated['selectedCategoryFilters'] as $category_filter) {
                     $data[] = [
@@ -69,12 +69,12 @@ class CategoryEditComponent extends Component
             $this->js("toastr.error('Error updating category')");
         }
 
-
     }
 
     public function render()
     {
         $filter_groups = \App\Models\FilterGroup::all();
+
         return view('livewire.admin.category.category-edit-component', compact('filter_groups'));
     }
 }

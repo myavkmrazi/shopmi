@@ -12,9 +12,13 @@ use Livewire\Component;
 class UserCreateComponent extends Component
 {
     public string $name = '';
+
     public string $surname = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public bool $is_admin = false;
 
     public function save()
@@ -27,7 +31,7 @@ class UserCreateComponent extends Component
             'is_admin' => 'boolean',
         ]);
 
-        $user = new User();
+        $user = new User;
         $user->name = $validated['name'];
         $user->surname = $validated['surname'];
         $user->email = $validated['email'];

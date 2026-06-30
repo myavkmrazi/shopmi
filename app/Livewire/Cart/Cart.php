@@ -2,16 +2,16 @@
 
 namespace App\Livewire\Cart;
 
-use Livewire\Component;
-use App\Helpers\Traits\CartTrait;
 use App\Helpers\Cart\Cart as CartHelper;
+use App\Helpers\Traits\CartTrait;
+use Livewire\Component;
 
 class Cart extends Component
 {
     use CartTrait;
 
-
     public $cartItems = [];
+
     protected $listeners = ['cart-updated' => 'refreshCart'];
 
     public function mount()
@@ -74,7 +74,7 @@ class Cart extends Component
 
     public function refreshCart()
     {
-        $this->cartItems = CartHelper::getCart(); 
+        $this->cartItems = CartHelper::getCart();
     }
 
     public function render()

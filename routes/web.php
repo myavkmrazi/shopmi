@@ -12,12 +12,10 @@ Route::get('/checkout/success', \App\Livewire\Cart\CheckoutSuccessComponent::cla
 Route::get('/search', \App\Livewire\Search\SearchComponent::class)->name('search');
 Route::get('/wishlist', \App\Livewire\Wishlist\WishlistComponent::class)->name('wishlist');
 
-
 Route::middleware('guest')->group(function () {
     Route::get('/register', \App\Livewire\User\RegisterComponent::class)->name('register');
     Route::get('/login', \App\Livewire\User\LoginComponent::class)->name('login');
 });
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/account', \App\Livewire\User\AccountComponent::class)->name('account');
@@ -25,17 +23,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', \App\Livewire\User\OrderComponent::class)->name('orders');
     Route::get('/order-show/{id}', \App\Livewire\User\OrderShowComponent::class)->name('orders-show');
 
-
     Route::post('/logout', function () {
         auth()->logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
+
         return redirect()->route('login');
     })->name('logout');
 });
-
-
-
 
 Route::prefix('admin')->middleware('admin')->group(function () {
     Route::get('/', App\Livewire\Admin\HomeComponent::class)->name('admin');

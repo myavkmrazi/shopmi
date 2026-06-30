@@ -15,10 +15,15 @@ class UserEditComponent extends Component
     use WithPagination;
 
     public User $user;
+
     public string $name = '';
+
     public string $surname = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public bool $is_admin = false;
 
     public function mount(User $user)
@@ -35,7 +40,7 @@ class UserEditComponent extends Component
         $validated = $this->validate([
             'name' => 'required|max:255',
             'surname' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $this->user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$this->user->id,
             'password' => 'nullable|min:8',
             'is_admin' => 'boolean',
         ]);

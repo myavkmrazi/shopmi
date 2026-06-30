@@ -2,10 +2,11 @@
 
 namespace App\Livewire\Admin\Filter;
 
-use Livewire\Component;
+use App\Models\FilterGroup;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use App\Models\FilterGroup;
+use Livewire\Component;
+
 #[Layout('components.layouts.admin')]
 #[Title('Create Filter Group')]
 class FilterGroupCreateComponent extends Component

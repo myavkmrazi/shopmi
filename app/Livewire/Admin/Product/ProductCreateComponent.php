@@ -20,17 +20,28 @@ class ProductCreateComponent extends Component
     use WithFileUploads;
 
     public string $title;
+
     public $category_id;
+
     public array $selectedFilters = [];
+
     public int $price = 0;
+
     public int $old_price = 0;
+
     public int $stock = 100;
+
     public bool $is_hit = false;
+
     public bool $is_new = false;
+
     public string $excerpt;
+
     public string $content;
+
     #[Validate]
     public $image;
+
     #[Validate]
     public $gallery;
 
@@ -44,7 +55,7 @@ class ProductCreateComponent extends Component
     {
         $filter_groups = [];
         if ($this->category_id) {
-            $ids = \App\Helpers\Category\Category::getIds($this->category_id) . $this->category_id;
+            $ids = \App\Helpers\Category\Category::getIds($this->category_id).$this->category_id;
             $category_filters = DB::table('category_filters')
                 ->select('category_filters.filter_group_id', 'filter_groups.title', 'filters.id as filter_id', 'filters.title as filter_title')
                 ->join('filter_groups', 'category_filters.filter_group_id', '=', 'filter_groups.id')
@@ -56,6 +67,7 @@ class ProductCreateComponent extends Component
                 $filter_groups[$filter->filter_group_id][] = $filter;
             }
         }
+
         return $filter_groups;
     }
 
@@ -81,13 +93,13 @@ class ProductCreateComponent extends Component
     {
         $validated = $this->validate();
 
-        $folders = date('Y') . '/' . date('m') . '/' . date('d');
+        $folders = date('Y').'/'.date('m').'/'.date('d');
         if ($validated['image']) {
-            $validated['image'] = "uploads/" . $validated['image']->store($folders, 'public_uploads');
+            $validated['image'] = 'uploads/'.$validated['image']->store($folders, 'public_uploads');
         }
-        if (!empty($validated['gallery'])) {
+        if (! empty($validated['gallery'])) {
             foreach ($validated['gallery'] as $k => $photo) {
-                $validated['gallery'][$k] = "uploads/" . $photo->store($folders, 'public_uploads'); 
+                $validated['gallery'][$k] = 'uploads/'.$photo->store($folders, 'public_uploads');
             }
         }
 
@@ -96,7 +108,7 @@ class ProductCreateComponent extends Component
 
             $product = Product::query()->create($validated);
 
-            if (!empty($validated['selectedFilters'])) {
+            if (! empty($validated['selectedFilters'])) {
                 $filter_groups = Filter::query()
                     ->whereIn('id', $validated['selectedFilters'])->get();
                 $data = [];

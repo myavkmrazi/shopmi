@@ -14,10 +14,12 @@ class OrderClient extends Mailable
     use Queueable, SerializesModels;
 
     public array $cart;
-    public int $total;
-    public int $order_id;
-    public string $note;
 
+    public int $total;
+
+    public int $order_id;
+
+    public string $note;
 
     public function __construct(array $cart, int $total, int $order_id, string $note = '')
     {
@@ -27,15 +29,13 @@ class OrderClient extends Mailable
         $this->note = $note;
     }
 
-
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('no-reply@laravel-myavka.ru', 'Магазин'), // Используем правильный домен
+            from: new Address('no-reply@laravel-myavka.ru', 'Магазин'),
             subject: "Заказ #{$this->order_id}",
         );
     }
-
 
     public function content(): Content
     {

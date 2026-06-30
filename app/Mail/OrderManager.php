@@ -15,12 +15,10 @@ class OrderManager extends Mailable
 
     public int $order_id;
 
-
     public function __construct(int $order_id)
     {
         $this->order_id = $order_id;
     }
-
 
     public function envelope(): Envelope
     {
@@ -29,7 +27,6 @@ class OrderManager extends Mailable
             subject: "Новый заказ #{$this->order_id}",
         );
     }
-
 
     public function content(): Content
     {
@@ -51,4 +48,3 @@ class OrderManager extends Mailable
         return [];
     }
 }
-

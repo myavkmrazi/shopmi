@@ -2,10 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\Product;
-use Livewire\Component;
 use App\Helpers\Traits\CartTrait;
 use App\Helpers\Traits\WishlistTrait;
+use App\Models\Product;
+use Livewire\Component;
 
 class HomeComponent extends Component
 {
@@ -33,26 +33,22 @@ class HomeComponent extends Component
         ]);
     }
 
-
     public function getRandomProductImage()
     {
         $imageFiles = [];
         $productsPath = public_path('img/products');
 
-
-        if (!is_dir($productsPath)) {
-            return '2.jpeg'; // fallback
+        if (! is_dir($productsPath)) {
+            return '2.jpeg';
         }
-
 
         $files = scandir($productsPath);
 
         foreach ($files as $file) {
 
-            if ($file === '.' || $file === '..' || is_dir($productsPath . '/' . $file)) {
+            if ($file === '.' || $file === '..' || is_dir($productsPath.'/'.$file)) {
                 continue;
             }
-
 
             $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
             if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
@@ -60,11 +56,10 @@ class HomeComponent extends Component
             }
         }
 
-
-        if (!empty($imageFiles)) {
+        if (! empty($imageFiles)) {
             return $imageFiles[array_rand($imageFiles)];
         }
 
-        return '2.jpeg'; 
+        return '2.jpeg';
     }
 }

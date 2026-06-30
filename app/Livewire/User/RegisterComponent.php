@@ -8,10 +8,15 @@ use Livewire\Component;
 class RegisterComponent extends Component
 {
     public string $name = '';
+
     public string $surname = '';
+
     public string $email = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
+
     public bool $terms = false;
 
     public function save()

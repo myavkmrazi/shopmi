@@ -1,0 +1,331 @@
+/* ==========================================================================
+   SHOPMI — МОБИЛЬНАЯ АДАПТАЦИЯ ГЛАВНОЙ СТРАНИЦЫ
+   Подключить ПОСЛЕ app.css:
+   <link rel="stylesheet" href="{{ asset('css/home-mobile.css') }}">
+   ========================================================================== */
+
+/* ─── 1. НАВИГАЦИЯ: бургер-меню вместо открытого списка ──────────────────── */
+
+/* Скрываем ссылки по умолчанию на мобилке — показываем только через бургер */
+@media (max-width: 992px) {
+
+    /* Кнопка бургера */
+    .shopmi-burger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: 1px solid var(--shopmi-line);
+        cursor: pointer;
+        padding: 8px;
+        flex-shrink: 0;
+        margin-left: auto;
+        order: 1;
+        transition: border-color .2s ease;
+    }
+
+    .shopmi-burger:hover {
+        border-color: var(--shopmi-ink);
+    }
+
+    .shopmi-burger span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background: var(--shopmi-ink);
+        transition: transform .25s ease, opacity .2s ease;
+        transform-origin: center;
+    }
+
+    /* Состояние "крестик" когда меню открыто */
+    .shopmi-burger.is-open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .shopmi-burger.is-open span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+
+    .shopmi-burger.is-open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Перестраиваем шапку: лого | бургер */
+    .shopmi-navbar__inner {
+        flex-wrap: nowrap !important;
+        align-items: center;
+        padding: .6rem 0;
+        min-height: 60px;
+    }
+
+    /* Скрываем ссылки и поиск — показываем только при открытом меню */
+    .shopmi-navbar__links,
+    .shopmi-navbar__end {
+        display: none !important;
+        width: 100%;
+        order: 10;
+    }
+
+    .shopmi-navbar__links.is-open,
+    .shopmi-navbar__end.is-open {
+        display: flex !important;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: .5rem 0;
+        border-top: 1px solid var(--shopmi-line);
+        animation: shopmiMenuSlide .2s ease both;
+    }
+
+    @keyframes shopmiMenuSlide {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Ссылки навигации — вертикально, на всю ширину */
+    .shopmi-navbar__links .nav-item {
+        width: 100%;
+    }
+
+    .shopmi-navbar__links .nav-link {
+        display: block;
+        width: 100%;
+        padding: .75rem .5rem !important;
+        border-bottom: 1px solid var(--shopmi-line);
+        font-size: 1.4rem !important;
+    }
+
+    /* Dropdown категорий раскрывается вниз */
+    .shopmi-navbar__links .dropdown-menu {
+        position: static !important;
+        display: none;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 0 0 1rem !important;
+        min-width: auto;
+        margin: 0 !important;
+        transform: none !important;
+    }
+
+    .shopmi-navbar__links .dropdown-menu.show {
+        display: block !important;
+    }
+
+    .shopmi-navbar__links .dropdown-item {
+        padding: .6rem .5rem;
+        font-size: 1.1rem;
+        border-bottom: 1px solid var(--shopmi-line);
+    }
+
+    /* Поиск на всю ширину */
+    .shopmi-navbar__end.is-open {
+        padding: .75rem 0;
+        border-top: 0;
+    }
+
+    .shopmi-search {
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+    /* Иконка пользователя — рядом с бургером в шапке */
+    .shopmi-navbar__user {
+        margin-left: 0;
+        order: 0;
+    }
+
+    /* Убираем корзину из "user" на мобилке — она есть в __end */
+    .shopmi-navbar.navbar {
+        min-height: 60px;
+    }
+}
+
+/* ─── 2. БАННЕР: правильные пропорции на мобилке ────────────────────────── */
+
+@media (max-width: 767px) {
+    .home-component .home-hero {
+        min-height: 200px;
+    }
+
+    .home-component .hero-banner {
+        max-height: 56vw;
+        /* ~56% ширины экрана = хорошая пропорция для баннера */
+        object-fit: cover;
+        object-position: center top;
+    }
+}
+
+/* ─── 3. CONTAINER: меньше отступы на маленьких экранах ─────────────────── */
+
+@media (max-width: 767px) {
+    .home-component .container-wide {
+        padding: 0 .85rem;
+    }
+}
+
+/* ─── 4. ВКЛАДКИ "ABOUT / SHIPPING / RETURNS": скроллятся горизонтально ─── */
+
+@media (max-width: 767px) {
+    .home-component .adv-tabs {
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .home-component .adv-tabs::-webkit-scrollbar {
+        display: none;
+        /* Chrome/Safari */
+    }
+
+    .home-component .adv-tabs .nav-item {
+        flex-shrink: 0;
+    }
+
+    .home-component .adv-tabs .nav-link {
+        padding: .65rem .9rem !important;
+        font-size: 1rem !important;
+        white-space: nowrap;
+    }
+
+    .home-component .adv-content {
+        padding: 1rem;
+    }
+
+    /* Заголовок внутри таба чуть меньше */
+    .home-component .adv-content .shopmi-title {
+        font-size: clamp(1.6rem, 7vw, 2.4rem) !important;
+    }
+}
+
+/* ─── 5. СЕКЦИИ КАРУСЕЛЕЙ: section-title и отступы ──────────────────────── */
+
+@media (max-width: 767px) {
+    .home-component .section-title {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+        margin-bottom: .85rem;
+    }
+
+    .home-component .section-bg {
+        padding: 1rem;
+    }
+
+    /* Скрываем стрелки каруселей — пальцем свайпают */
+    .home-component .owl-nav {
+        display: none !important;
+    }
+
+    /* Делаем точки чуть крупнее для тача */
+    .home-component .owl-dot {
+        width: 12px !important;
+        height: 12px !important;
+        margin: 0 6px !important;
+    }
+}
+
+/* ─── 6. КАРТА: меньше высота, меньше паддинг секции ────────────────────── */
+
+@media (max-width: 767px) {
+    .home-component .map-section-full {
+        padding: 1.5rem 0;
+    }
+
+    .home-component .map-container #map {
+        height: 240px;
+    }
+
+    .map-section-head {
+        flex-direction: column !important;
+        gap: .5rem;
+        align-items: flex-start !important;
+        margin-bottom: 1rem;
+    }
+
+    .map-section-head .section-title {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+}
+
+/* ─── 7. СЕКЦИЯ "О НАС": отступ снизу ───────────────────────────────────── */
+
+@media (max-width: 767px) {
+    .home-component #about {
+        padding: 1rem;
+    }
+
+    .home-component #about .shopmi-subtitle {
+        font-size: .95rem;
+    }
+
+    .home-component #about .shopmi-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ─── 8. ОБЩИЕ ОТСТУПЫ между секциями ───────────────────────────────────── */
+
+@media (max-width: 767px) {
+    .home-component .mb-5 {
+        margin-bottom: 1rem !important;
+    }
+
+    .home-component .mb-4 {
+        margin-bottom: .75rem !important;
+    }
+}
+
+/* ─── ФИКС: открытое мобильное меню ──────────────────────────────────────── */
+@media (max-width: 992px) {
+
+    /* Весь inner — вертикальная колонка когда меню открыто */
+    .shopmi-navbar__inner {
+        flex-wrap: wrap !important;
+    }
+
+    /* Ссылки — вертикально, на всю ширину */
+    .shopmi-navbar__links.is-open {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        width: 100% !important;
+        order: 3;
+    }
+
+    .shopmi-navbar__links.is-open .nav-item {
+        width: 100%;
+    }
+
+    .shopmi-navbar__links.is-open .nav-link {
+        padding: .85rem .5rem !important;
+        border-bottom: 1px solid var(--shopmi-line);
+        font-size: 1.3rem !important;
+    }
+
+    /* Поиск + профиль — под ссылками */
+    .shopmi-navbar__end.is-open {
+        order: 4;
+        width: 100% !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        padding: .75rem 0 !important;
+        gap: .75rem !important;
+        border-top: 1px solid var(--shopmi-line);
+    }
+
+    .shopmi-navbar__end.is-open .shopmi-search {
+        flex: 1 !important;
+    }
+}

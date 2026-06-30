@@ -2,18 +2,17 @@
 
 namespace App\Livewire\Admin\Filter;
 
-use Livewire\Component;
+use App\Models\FilterGroup;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use App\Models\FilterGroup;
-use App\Models\Filter;
+use Livewire\Component;
 
 #[Layout('components.layouts.admin')]
 #[Title('Create Filter Group')]
 class FilterGroupEditComponent extends Component
 {
-
     public FilterGroup $filter_group;
+
     public string $title;
 
     public function mount(FilterGroup $filter_group)
@@ -21,6 +20,7 @@ class FilterGroupEditComponent extends Component
         $this->filterGroup = $filter_group;
         $this->title = $filter_group->title;
     }
+
     public function save()
     {
         $validated = $this->validate([
@@ -32,6 +32,7 @@ class FilterGroupEditComponent extends Component
         session()->flash('success', 'Filter group updated successfully');
         $this->redirectRoute('admin.filter-groups.index', navigate: true);
     }
+
     public function render()
     {
         return view('livewire.admin.filter.filter-group-edit-component');

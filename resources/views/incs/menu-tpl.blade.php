@@ -1,5 +1,8 @@
 {{-- resources/views/incs/menu-tpl.blade.php --}}
-<li @class(['dropend' => !empty($item['children'])])>
+<li @class([
+    'dropdown' => !empty($item['children']),
+    'dropend' => !empty($item['children']),
+])>
     @if (!empty($item['children']))
         <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">

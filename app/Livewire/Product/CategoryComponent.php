@@ -2,29 +2,42 @@
 
 namespace App\Livewire\Product;
 
-use Livewire\Component;
-use Livewire\WithPagination;
-use App\Models\Category;
-use App\Models\Product;
 use App\Helpers\Traits\CartTrait;
 use App\Helpers\Traits\WishlistTrait;
-use Livewire\Attributes\Url;
+use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class CategoryComponent extends Component
 {
-    use WithPagination, CartTrait, WishlistTrait;
+    use CartTrait, WishlistTrait, WithPagination;
 
     public $slug;
-    public $category;
-    public string $categoryTitle = '';
-    #[Url] public $minPrice = '';
-    #[Url] public $maxPrice = '';
-    #[Url(except: false)] public bool $inStock = false;
 
-    #[Url] public string $sort = 'default';
-    #[Url] public array $selected_filters = [];
-    #[Url] public int $limit = 6;
+    public $category;
+
+    public string $categoryTitle = '';
+
+    #[Url]
+    public $minPrice = '';
+
+    #[Url]
+    public $maxPrice = '';
+
+    #[Url(except: false)]
+    public bool $inStock = false;
+
+    #[Url]
+    public string $sort = 'default';
+
+    #[Url]
+    public array $selected_filters = [];
+
+    #[Url]
+    public int $limit = 6;
 
     protected $listeners = ['gotoPage'];
 
@@ -43,23 +56,24 @@ class CategoryComponent extends Component
         $this->slug = $slug;
         $this->loadCategory();
 
-        if (!isset($this->sortList[$this->sort])) {
+        if (! isset($this->sortList[$this->sort])) {
             $this->sort = 'default';
         }
 
-        if (!in_array($this->limit, $this->limitList)) {
+        if (! in_array($this->limit, $this->limitList)) {
             $this->limit = 6;
         }
     }
+
     public function updatedPage($page)
     {
 
-        if (!$this->category) {
+        if (! $this->category) {
             return;
         }
 
-        $page_title = $page > 1 ? " :: Страница {$page}" : "";
-        $title = config('app.name') . " :: Категория {$this->category->title}{$page_title}";
+        $page_title = $page > 1 ? " :: Страница {$page}" : '';
+        $title = config('app.name')." :: Категория {$this->category->title}{$page_title}";
 
         $this->dispatch('page-updated', title: $title);
     }
@@ -69,16 +83,15 @@ class CategoryComponent extends Component
         $this->category = Category::with([
             'children' => function ($query) {
                 $query->withCount('products');
-            }
+            },
         ])->where('slug', $this->slug)->firstOrFail();
     }
 
     public function getProductsProperty()
     {
-        if (!$this->category) {
+        if (! $this->category) {
             return collect()->paginate(6);
         }
-
 
         $categoryIds = [$this->category->id];
         if ($this->category->children && $this->category->children->count() > 0) {
@@ -88,7 +101,6 @@ class CategoryComponent extends Component
         }
 
         $query = Product::whereIn('category_id', $categoryIds);
-
 
         if ($this->minPrice !== '' && is_numeric($this->minPrice)) {
             $query->where('price', '>=', (float) $this->minPrice);
@@ -101,16 +113,15 @@ class CategoryComponent extends Component
             $query->where('stock', '>', 0);
         }
 
-        if (!empty($this->selected_filters)) {
+        if (! empty($this->selected_filters)) {
             $filterIds = array_map('intval', $this->selected_filters);
             $query->whereHas('filters', function ($q) use ($filterIds) {
                 $q->whereIn('filters.id', $filterIds);
             });
         }
 
-
         $sortKey = $this->sort;
-        if (!isset($this->sortList[$sortKey])) {
+        if (! isset($this->sortList[$sortKey])) {
             $sortKey = 'default';
         }
 
@@ -148,7 +159,7 @@ class CategoryComponent extends Component
     public function render()
     {
 
-        if (!$this->category) {
+        if (! $this->category) {
             return view('livewire.product.category-component', [
                 'category' => null,
                 'products' => collect()->paginate(6),
@@ -170,7 +181,6 @@ class CategoryComponent extends Component
             ->where('category_filters.category_id', $categoryId)
             ->get();
 
-
         $page = request()->query('page', 1);
         $products = $this->products;
 
@@ -178,8 +188,7 @@ class CategoryComponent extends Component
             abort(404);
         }
 
-
-        $title = "Категория: {$this->category->title}" . ($page ? ":: Page - {$page}" : '');
+        $title = "Категория: {$this->category->title}".($page ? ":: Page - {$page}" : '');
 
         return view('livewire.product.category-component', [
             'category' => $this->category,

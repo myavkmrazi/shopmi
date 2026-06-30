@@ -2,15 +2,15 @@
 
 namespace App\Livewire\Search;
 
-use Livewire\Component;
-use Livewire\WithPagination;
 use App\Helpers\Traits\CartTrait;
 use App\Helpers\Traits\WishlistTrait;
 use App\Models\Product;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class SearchComponent extends Component
 {
-    use WithPagination, CartTrait, WishlistTrait;
+    use CartTrait, WishlistTrait, WithPagination;
 
     public $query;
 
@@ -31,7 +31,7 @@ class SearchComponent extends Component
         if ($this->query) {
             $products = Product::query()
                 ->where('stock', '>', 0)
-                ->whereLike('title', '%' . $this->query . '%')
+                ->whereLike('title', '%'.$this->query.'%')
                 ->paginate(12);
         }
 

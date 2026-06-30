@@ -1,8 +1,6 @@
-// resources/js/app.js
 import $ from 'jquery';
 window.$ = window.jQuery = $;
 
-// Динамический импорт Owl Carousel
 import('owl.carousel').then(() => {
     console.log('🦉 Owl Carousel loaded via Vite');
     initializeOwlCarousels();
@@ -10,7 +8,6 @@ import('owl.carousel').then(() => {
     console.error('❌ Owl Carousel loading failed:', error);
 });
 
-// Импортируем CSS
 import 'owl.carousel/dist/assets/owl.carousel.css';
 
 let carouselsInitialized = false;
@@ -41,7 +38,6 @@ function initializeOwlCarousels() {
         carousels.each(function () {
             const $carousel = $(this);
 
-            // Если уже инициализирован - пропускаем
             if ($carousel.hasClass('owl-loaded')) {
                 console.log('⏩ Carousel already initialized, skipping');
                 return;
@@ -55,7 +51,7 @@ function initializeOwlCarousels() {
                 autoplay: true,
                 autoplayTimeout: 3000,
                 autoplayHoverPause: true,
-                smartSpeed: 700,              // Увеличил для плавности
+                smartSpeed: 700,
                 slideSpeed: 600,
                 paginationSpeed: 600,
                 fluidSpeed: 700,
@@ -118,11 +114,8 @@ function initShopmiMenus() {
     });
 }
 
-/**
- * ПЛАВНАЯ ПРОКРУТКА С УЛУЧШЕННОЙ АНИМАЦИЕЙ
- */
+
 function enableSmoothScroll() {
-    // Используем делегирование событий для производительности
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a[href^="#"]');
         if (!link) return;
@@ -130,7 +123,6 @@ function enableSmoothScroll() {
         const href = link.getAttribute('href');
         if (!href || href === '#') return;
 
-        // Пропускаем ссылки, которые не являются якорями
         if (!href.startsWith('#')) return;
 
         const targetId = href.substring(1); // Убираем #
@@ -141,27 +133,24 @@ function enableSmoothScroll() {
 
         e.preventDefault();
 
-        // Кастомная плавная прокрутка с easing функцией
         smoothScrollTo(targetElement, {
-            duration: 1000,           // Длительность анимации в мс
-            offset: 80,                // Отступ сверху (для фиксированной шапки)
+            duration: 1000,
+            offset: 80,
             easing: (t) => t < 0.5
                 ? 2 * t * t
-                : 1 - Math.pow(-2 * t + 2, 2) / 2 // easeInOutQuad
+                : 1 - Math.pow(-2 * t + 2, 2) / 2
         });
     }, { passive: false });
 
     console.log('✅ Smooth scroll enabled');
 }
 
-/**
- * Функция для кастомной плавной прокрутки
- */
+
 function smoothScrollTo(element, options = {}) {
     const {
         duration = 800,
         offset = 0,
-        easing = (t) => t // linear по умолчанию
+        easing = (t) => t
     } = options;
 
     const targetPosition = element.getBoundingClientRect().top + window.pageYOffset - offset;
@@ -174,7 +163,6 @@ function smoothScrollTo(element, options = {}) {
         const timeElapsed = currentTime - startTime;
         const progress = Math.min(timeElapsed / duration, 1);
 
-        // Применяем easing функцию
         const easeProgress = easing(progress);
 
         window.scrollTo(0, startPosition + distance * easeProgress);
@@ -187,11 +175,8 @@ function smoothScrollTo(element, options = {}) {
     requestAnimationFrame(animation);
 }
 
-/**
- * ДОПОЛНИТЕЛЬНЫЕ УЛУЧШЕНИЯ ДЛЯ ПРОКРУТКИ
- */
 
-// 1. Индикатор прогресса прокрутки
+
 function initScrollProgress() {
     const progressBar = document.createElement('div');
     progressBar.className = 'scroll-progress';
@@ -215,7 +200,6 @@ function initScrollProgress() {
     }, { passive: true });
 }
 
-// 2. Ленивая загрузка с плавным появлением
 function initLazyLoading() {
     const observerOptions = {
         root: null,
@@ -241,7 +225,6 @@ function initLazyLoading() {
     });
 }
 
-// 3. Параллакс эффект для баннера
 function initParallax() {
     const banner = document.querySelector('.carousel-item img');
     if (banner) {
@@ -252,7 +235,6 @@ function initParallax() {
     }
 }
 
-// 4. Добавляем CSS для плавной прокрутки
 function addSmoothStyles() {
     const style = document.createElement('style');
     style.textContent = `
@@ -281,11 +263,9 @@ function addSmoothStyles() {
     document.head.appendChild(style);
 }
 
-// Инициализация при загрузке DOM
 document.addEventListener('DOMContentLoaded', function () {
     console.log('📄 DOM Content Loaded');
 
-    // Запускаем все улучшения
     enableSmoothScroll();
     initShopmiMenus();
     initScrollProgress();
@@ -296,7 +276,14 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(initializeOwlCarousels, 300);
 }, { passive: true });
 
-// Оптимизация для Livewire
+document.addEventListener('show.bs.offcanvas', function () {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.querySelector('.shopmi-navbar').style.marginRight = scrollbarWidth + 'px';
+});
+
+document.addEventListener('hidden.bs.offcanvas', function () {
+    document.querySelector('.shopmi-navbar').style.marginRight = '';
+});
 if (typeof Livewire !== 'undefined') {
     console.log('🔌 Livewire detected');
 
@@ -309,7 +296,6 @@ if (typeof Livewire !== 'undefined') {
             carouselsInitialized = false;
             initializeOwlCarousels();
 
-            // Перезапускаем lazy loading для новых элементов
             initLazyLoading();
         }, 400);
     });

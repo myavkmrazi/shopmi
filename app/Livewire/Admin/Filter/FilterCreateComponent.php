@@ -2,17 +2,18 @@
 
 namespace App\Livewire\Admin\Filter;
 
+use App\Models\Filter;
 use App\Models\FilterGroup;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use App\Models\Filter;
+use Livewire\Component;
 
 #[Layout('components.layouts.admin')]
 #[Title('Create Filter')]
 class FilterCreateComponent extends Component
 {
     public string $title;
+
     public $filter_group_id;
 
     public function save()
@@ -29,6 +30,7 @@ class FilterCreateComponent extends Component
     public function render()
     {
         $filter_groups = FilterGroup::all();
+
         return view('livewire.admin.filter.filter-create-component', compact('filter_groups'));
     }
 }

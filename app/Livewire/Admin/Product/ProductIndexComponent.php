@@ -3,19 +3,20 @@
 namespace App\Livewire\Admin\Product;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Storage;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 #[Layout('components.layouts.admin')]
 #[Title('Products')]
 class ProductIndexComponent extends Component
 {
     use WithPagination;
+
     protected $paginationTheme = 'bootstrap';
 
     public function deleteProduct(Product $product)
@@ -31,12 +32,18 @@ class ProductIndexComponent extends Component
             $product->delete();
             DB::commit();
             if ($image) {
-                Storage::disk('public_uploads_delete')->delete($image);
+                $this->deleteUploadFile($image);
             }
-            if ($gallery) {
-                Storage::disk('public_uploads_delete')->delete($gallery);
+            if (! empty($gallery)) {
+                foreach ((array) $gallery as $galleryPath) {
+                    if (is_string($galleryPath)) {
+                        $this->deleteUploadFile($galleryPath);
+                    }
+                }
             }
+
             $this->js("toastr.success('Product removed')");
+
             return;
 
         } catch (\Exception $e) {
@@ -44,15 +51,21 @@ class ProductIndexComponent extends Component
             Log::error($e->getMessage());
             $this->js("toastr.error('Error deleting product')");
         }
-        Storage::disk('public_uploads_delete')->delete('uploads/test.txt');
-        dump($product);
     }
+
+    private function deleteUploadFile(string $path): void
+    {
+        $relativePath = str_starts_with($path, 'uploads/') ? substr($path, 8) : $path;
+        Storage::disk('public_uploads')->delete($relativePath);
+    }
+
     public function render()
     {
         $products = Product::query()
             ->with('category')
             ->orderBy('id', 'desc')
             ->paginate();
+
         return view('livewire.admin.product.product-index-component', compact('products'));
     }
 }

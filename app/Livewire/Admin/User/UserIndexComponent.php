@@ -14,20 +14,20 @@ use Livewire\WithPagination;
 #[Title('Users')]
 class UserIndexComponent extends Component
 {
-
     use WithPagination;
 
     public function deleteUser(User $user)
     {
         try {
             DB::beginTransaction();
-           
+
             DB::table('orders')
                 ->where('user_id', '=', $user->id)
-                ->update(['user_id' => NULL]);
+                ->update(['user_id' => null]);
             $user->delete();
             DB::commit();
             $this->js("toastr.success('User deleted successfully')");
+
             return;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -39,6 +39,7 @@ class UserIndexComponent extends Component
     public function render()
     {
         $users = User::query()->orderBy('id', 'desc')->paginate();
+
         return view('livewire.admin.user.user-index-component', compact('users'));
     }
 }

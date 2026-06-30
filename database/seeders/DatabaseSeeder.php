@@ -8,9 +8,9 @@ use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
-       public function run(): void
+    public function run(): void
     {
-       
+
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@mail.com',

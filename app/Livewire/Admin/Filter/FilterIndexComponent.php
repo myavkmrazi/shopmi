@@ -2,19 +2,22 @@
 
 namespace App\Livewire\Admin\Filter;
 
-use Livewire\Component;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
-use Livewire\WithPagination;
 use App\Models\Filter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
+
 #[Layout('components.layouts.admin')]
 #[Title('Filters')]
 class FilterIndexComponent extends Component
 {
     use WithPagination;
+
     protected $paginationTheme = 'bootstrap';
+
     public function deleteFilter(Filter $filter)
     {
         try {
@@ -25,6 +28,7 @@ class FilterIndexComponent extends Component
             $filter->delete();
             DB::commit();
             $this->js("toastr.success('Filter removed')");
+
             return;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -33,9 +37,11 @@ class FilterIndexComponent extends Component
         }
 
     }
+
     public function render()
     {
         $filters = Filter::query()->with('group')->paginate();
+
         return view('livewire.admin.filter.filter-index-component', compact('filters'));
     }
 }

@@ -1,4 +1,3 @@
-// resources/js/owl-init.js
 console.log('🦉 owl-init.js loaded');
 
 let initializationInProgress = false;
@@ -29,7 +28,6 @@ function initializeAllOwlCarousels() {
         return;
     }
 
-    // Проверяем что jQuery и Owl Carousel загружены
     if (typeof window.jQuery === 'undefined') {
         console.log('❌ jQuery not available');
         initializationInProgress = false;
@@ -56,14 +54,12 @@ function initializeAllOwlCarousels() {
         carousels.forEach((carousel, index) => {
             const $carousel = window.jQuery(carousel);
 
-            // Если уже инициализирован - пропускаем
             if ($carousel.hasClass('owl-loaded')) {
                 console.log(`⏩ Carousel ${index + 1} already initialized`);
                 initializedCount++;
                 return;
             }
 
-            // Инициализируем только новые карусели
             $carousel.owlCarousel({
                 loop: true,
                 margin: 20,
@@ -72,13 +68,15 @@ function initializeAllOwlCarousels() {
                 autoplay: true,
                 autoplayTimeout: 3000,
                 autoplayHoverPause: true,
-                smartSpeed: 500, // Добавляем для плавности
+                smartSpeed: 500,
                 navText: ['‹', '›'],
                 responsive: {
                     0: { items: 1 },
                     576: { items: 2 },
                     768: { items: 3 },
-                    1000: { items: 4 }
+                    1000: { items: 4 },
+                    1400: { items: 5 },
+                    1800: { items: 6 }
                 }
             });
 
@@ -95,13 +93,11 @@ function initializeAllOwlCarousels() {
     }
 }
 
-// ОДИН обработчик - после полной загрузки страницы
 window.addEventListener('load', function () {
     console.log('📄 Page fully loaded');
     setTimeout(initializeAllOwlCarousels, 100);
 });
 
-// Для Livewire - с дебаунсом
 if (typeof Livewire !== 'undefined') {
     console.log('🔌 Livewire detected');
 
@@ -111,9 +107,8 @@ if (typeof Livewire !== 'undefined') {
 
         clearTimeout(livewireTimeout);
         livewireTimeout = setTimeout(() => {
-            // Сбрасываем счетчик для новых каруселей
             initializationAttempts = 0;
             initializeAllOwlCarousels();
-        }, 400); // Дебаунс 400ms
+        }, 400); 
     });
 }

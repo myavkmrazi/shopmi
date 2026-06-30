@@ -11,8 +11,7 @@ use Livewire\WithPagination;
 
 class FileManagerComponent extends Component
 {
-
-    use WithFileUploads, WithPagination, WithoutUrlPagination;
+    use WithFileUploads, WithoutUrlPagination, WithPagination;
 
     #[Validate]
     public $path;
@@ -27,9 +26,9 @@ class FileManagerComponent extends Component
     public function saveMedia()
     {
         $validated = $this->validate();
-        $folders = date('Y') . '/' . date('m') . '/' . date('d');
+        $folders = date('Y').'/'.date('m').'/'.date('d');
 
-        $validated['path'] = "uploads/" . $validated['path']->store($folders, 'public_uploads');
+        $validated['path'] = 'uploads/'.$validated['path']->store($folders, 'public_uploads');
         Media::query()->create($validated);
         $this->js("toastr.success('Upload successfully')");
         $this->path = null;
@@ -38,6 +37,7 @@ class FileManagerComponent extends Component
     public function render()
     {
         $media = Media::query()->orderBy('id', 'desc')->paginate();
+
         return view('livewire.admin.file-manager.file-manager-component', compact('media'));
     }
 }

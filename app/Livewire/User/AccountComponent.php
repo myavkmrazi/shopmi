@@ -2,8 +2,8 @@
 
 namespace App\Livewire\User;
 
-use Livewire\Component;
 use App\Models\Order;
+use Livewire\Component;
 
 class AccountComponent extends Component
 {

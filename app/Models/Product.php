@@ -72,7 +72,7 @@ class Product extends Model
             }
         }
 
-        if (!empty($this->gallery)) {
+        if (! empty($this->gallery)) {
             $image = $this->findPublicImage($this->gallery[0] ?? '');
 
             if ($image) {
@@ -101,7 +101,7 @@ class Product extends Model
             $images[] = $this->image;
         }
 
-        if (!empty($this->gallery)) {
+        if (! empty($this->gallery)) {
             $images = array_merge($images, $this->gallery);
         }
 
@@ -117,8 +117,8 @@ class Product extends Model
         $imagePath = str_replace('public/', '', $image);
         $possiblePaths = [
             $imagePath,
-            'uploads/' . basename($imagePath),
-            'img/products/' . basename($imagePath),
+            'uploads/'.basename($imagePath),
+            'img/products/'.basename($imagePath),
         ];
 
         foreach ($possiblePaths as $path) {

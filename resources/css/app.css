@@ -406,8 +406,9 @@ a.shopmi-btn-outline:hover {
 }
 
 @media (min-width: 993px) {
-    .shopmi-navbar .dropdown:hover > .dropdown-menu,
-    .shopmi-navbar .dropend:hover > .dropdown-menu {
+
+    .shopmi-navbar .dropdown:hover>.dropdown-menu,
+    .shopmi-navbar .dropend:hover>.dropdown-menu {
         display: block;
         opacity: 1;
         visibility: visible;
@@ -423,6 +424,7 @@ a.shopmi-btn-outline:hover {
         opacity: 0;
         transform: translateY(6px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -751,15 +753,15 @@ button,
 }
 
 .home-component .container-wide {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+    max-width: 100%;
+    padding: 0 2rem;
 }
 
 .home-carousel-section {
     position: relative;
     overflow: visible;
 }
+
 
 .home-component .section-bg.home-carousel-section {
     overflow: visible;
@@ -770,8 +772,40 @@ button,
     padding: 0;
 }
 
+/* Дочернее подменю открывается влево если нет места справа */
+.shopmi-navbar .dropend .dropdown-menu {
+    left: auto !important;
+    right: 100% !important;
+    top: 0 !important;
+}
+
 .home-carousel-wrap .owl-carousel .owl-stage-outer {
     overflow: hidden;
+}
+
+/* 1. Главное меню кнопки CATEGORY */
+.shopmi-navbar .nav-item.dropdown>.dropdown-menu {
+    /* Опускаем строго под нижний край кнопки */
+    top: 100% !important;
+
+    /* Сдвигаем влево, прижимая правый край меню к правому краю кнопки */
+    left: auto !important;
+    right: 0 !important;
+
+    /* Убираем возможные стандартные отступы Bootstrap, которые толкают его вверх */
+    margin-top: 0 !important;
+}
+
+.shopmi-navbar .dropdown-menu .dropend .dropdown-menu {
+    /* Оставляем на одной линии со строчкой SPORTSWEAR */
+    top: 0 !important;
+
+    /* Заставляем открываться ВПРАВО */
+    left: 100% !important;
+    right: auto !important;
+
+    /* Небольшой нахлёст (на пару пикселей влево), чтобы мышка не теряла фокус при переходе */
+    margin-left: -2px !important;
 }
 
 .home-carousel-wrap .owl-carousel .item {
@@ -992,244 +1026,279 @@ button,
     }
 }
 
-/* ===== Account ===== */
-.shopmi-account-layout {
-    display: grid;
-    gap: 1.5rem;
-}
+/* ===== Финальные исправления стиля карточек и пагинации под Fashion-вайб ===== */
 
-@media (min-width: 992px) {
-    .shopmi-account-layout {
-        grid-template-columns: 280px 1fr;
-        align-items: start;
-    }
-}
-
-.shopmi-account-nav {
-    padding: 0;
+/* 1. Возвращаем четкость заголовкам товаров (убираем грязную жирность) */
+.shopmi-card-title,
+.shopmi-product-body a,
+[class*="shopmi-card-title"],
+.card-body a.text-decoration-none {
+    font-size: 1.5rem !important;
+    /* Оставляем классный крупный размер */
+    font-weight: 400 !important;
+    /* Ставим нормальную жирность! Шрифт Bebas сам по себе массивный */
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    /* Увеличиваем межбуквенный интервал, чтобы буквы "дышали" и не сливались */
+    color: var(--shopmi-ink) !important;
+    line-height: 1.2 !important;
+    /* Чуть увеличиваем высоту строки, чтобы текст не прилипал */
+    margin-bottom: 8px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.shopmi-account-nav__head {
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--shopmi-line);
+/* 2. Делаем цену четкой и читаемой */
+.shopmi-price,
+.shopmi-product-body .shopmi-price {
+    font-size: 1.6rem !important;
+    font-weight: 400 !important;
+    /* Убираем 900, чтобы цифры не превращались в кашу */
+    letter-spacing: 0.5px !important;
+    color: var(--shopmi-ink) !important;
+    margin-top: 4px !important;
 }
 
-.shopmi-account-nav__user {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--shopmi-line);
+/* 2. Мощная, крупная акцентная цена */
+.shopmi-price,
+.shopmi-product-body .shopmi-price {
+    font-size: 1.7rem !important;
+    /* Цена крупнее названия */
+    font-weight: 900 !important;
+    /* Очень жирный акцент */
+    color: var(--shopmi-ink) !important;
+    letter-spacing: 0px !important;
+    margin-top: 4px !important;
 }
 
-.shopmi-account-avatar {
-    width: 56px;
-    height: 56px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--shopmi-line);
-    background: var(--shopmi-soft);
-    flex-shrink: 0;
+/* Старая перечеркнутая цена (если есть скидка) */
+.shopmi-price-old {
+    font-size: 1.1rem !important;
+    font-weight: 500 !important;
+    color: var(--shopmi-muted) !important;
 }
 
-.shopmi-account-link {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    color: var(--shopmi-ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--shopmi-line);
-    font-family: var(--shopmi-display);
-    letter-spacing: .5px;
+/* 3. Брутальные квадратные кнопки "В корзину" */
+.shopmi-product-body .shopmi-btn,
+.shopmi-product-card button {
+    border-radius: 0px !important;
+    /* Технологичные острые углы */
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    width: 100% !important;
+    /* Кнопка во всю ширину карточки */
+    justify-content: center !important;
 }
 
-.shopmi-account-link:hover,
-.shopmi-account-link.active {
-    background: var(--shopmi-soft);
+/* 4. Исправление пагинации Tailwind (выстраиваем в одну ровную строчку по центру) */
+nav[role="navigation"] {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 3rem !important;
 }
 
-.shopmi-account-link.active {
-    border-left: 3px solid var(--shopmi-accent);
-    padding-left: calc(1.5rem - 3px);
+nav[role="navigation"]>div:last-child,
+nav[role="navigation"] .flex.items-center.justify-between,
+.flex.justify-between.flex-1.sm\:hidden {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 10px !important;
 }
 
-.shopmi-account-badge {
-    min-width: 1.75rem;
-    padding: .2rem .55rem;
-    background: var(--shopmi-ink);
-    color: #fff;
-    font-family: var(--shopmi-display);
-    font-size: .85rem;
-    text-align: center;
+/* Прячем лишний текст Laravel "Showing 1 to 6..." чтобы не мешался */
+nav[role="navigation"] p.text-sm.text-gray-700 {
+    display: none !important;
 }
 
-.shopmi-account-stat {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: .85rem 0;
-    border-bottom: 1px solid var(--shopmi-line);
+/* Принудительно прячем обратно все кнопки wishlist (сердечки) */
+.shopmi-wishlist-btn,
+button[class*="wishlist"] {
+    display: none !important;
 }
 
-.shopmi-account-stat:last-child {
-    border-bottom: 0;
+/* ==========================================================================
+   МОБИЛЬНАЯ АДАПТАЦИЯ (Для экранов смартфонов меньше 768px)
+   ========================================================================== */
+/* СТАЛО — только для каталога товаров */
+@media (max-width: 767px) {
+
+    .shopmi-catalog .row,
+    .products-grid .row {
+        margin-left: -6px !important;
+        margin-right: -6px !important;
+    }
+
+    .shopmi-catalog .row>[class*="col-"],
+    .products-grid .row>[class*="col-"] {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        width: 50% !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        margin-bottom: 12px !important;
+    }
 }
 
-.shopmi-order-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem 0;
-    border-bottom: 1px solid var(--shopmi-line);
+/* 2. Компактность карточки, чтобы она не занимала весь экран по высоте */
+.shopmi-product-card,
+.product-card,
+.card.h-100 {
+    min-height: auto !important;
+    /* Сбрасываем десктопные 480px */
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-.shopmi-order-row:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
-}
-
-.shopmi-status {
-    display: inline-block;
-    padding: .35rem .75rem;
-    font-family: var(--shopmi-display);
-    letter-spacing: .5px;
-    font-size: .9rem;
-    background: var(--shopmi-ink);
-    color: #fff;
-}
-
-.shopmi-status.processing {
-    background: var(--shopmi-muted);
-}
-
-.shopmi-status.completed {
-    background: var(--shopmi-accent);
-    color: var(--shopmi-ink);
-}
-
-.shopmi-status.cancelled {
-    background: #dc3545;
-}
-
-/* Checkout payment */
-.checkout-payment-options {
-    display: grid;
-    gap: .75rem;
-}
-
-.checkout-payment-option {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: .25rem 1rem;
-    padding: 1rem 1.15rem;
-    border: 1px solid var(--shopmi-line);
-    cursor: pointer;
-    align-items: center;
-    transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
-}
-
-.checkout-payment-option i {
-    grid-row: span 2;
-    font-size: 1.35rem;
-    color: var(--shopmi-ink);
-}
-
-.checkout-payment-option__title {
-    font-family: var(--shopmi-display);
-    letter-spacing: .5px;
-    font-size: 1.1rem;
-}
-
-.checkout-payment-option__hint {
-    grid-column: 2;
-    color: var(--shopmi-muted);
-    font-size: .9rem;
-}
-
-.checkout-payment-option.is-active,
-.checkout-payment-option:hover {
-    border-color: var(--shopmi-ink);
-    background: rgba(184, 255, 44, .2);
-    box-shadow: 0 0 0 3px rgba(184, 255, 44, .25);
-}
-
-/* Wishlist button on card */
+/* Уменьшаем высоту контейнера картинки на мобилках */
 .shopmi-product-media {
-    position: relative;
+    aspect-ratio: 1.1 / 1 !important;
+    padding: 8px !important;
 }
 
-.shopmi-wishlist-btn {
-    position: absolute;
-    top: .65rem;
-    right: .65rem;
-    z-index: 3;
-    width: 38px;
-    height: 38px;
-    border: 1px solid var(--shopmi-line);
-    background: #fff;
-    color: var(--shopmi-ink);
-    display: grid;
-    place-items: center;
-    cursor: pointer;
+.shopmi-product-card img,
+.product-card img,
+.card.h-100 img {
+    height: 150px !important;
+    /* Умеренная высота для мобильных */
+    padding: 0 !important;
 }
 
-.shopmi-wishlist-btn.is-active,
-.shopmi-wishlist-btn:hover {
-    background: var(--shopmi-accent);
-    border-color: var(--shopmi-ink);
-    color: var(--shopmi-ink);
+/* 3. Оптимизация текстов внутри карточки */
+.shopmi-product-body,
+.card-body {
+    padding: 10px !important;
+    gap: 4px !important;
 }
 
-/* Search hints */
-.shopmi-search__panel {
-    position: absolute;
-    z-index: 1060;
-    top: calc(100% + 8px);
-    left: 0;
-    width: 100%;
-    padding: .85rem;
-    background: #fff;
-    border: 1px solid var(--shopmi-ink);
+/* Адаптивные шрифты для заголовков (уличный чистый капс без каши) */
+.shopmi-card-title,
+.shopmi-product-body a,
+[class*="shopmi-card-title"],
+.card-body a.text-decoration-none {
+    font-size: 1.1rem !important;
+    /* Уменьшаем, чтобы длинные названия не ломали карточку */
+    letter-spacing: 0.5px !important;
+    line-height: 1.1 !important;
+    margin-bottom: 4px !important;
+    -webkit-line-clamp: 2 !important;
+    /* Строго фиксируем 2 строки */
 }
 
-.shopmi-search__hint {
-    font-size: .85rem;
-    color: var(--shopmi-muted);
-    margin-bottom: .5rem;
+/* Уменьшаем цену для баланса */
+.shopmi-price,
+.shopmi-product-body .shopmi-price {
+    font-size: 1.25rem !important;
+    margin-top: 2px !important;
 }
 
-.shopmi-search__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-    align-items: center;
+.shopmi-price-old {
+    font-size: 0.85rem !important;
 }
 
-.shopmi-search__chip {
-    border: 1px solid var(--shopmi-line);
-    background: #fff;
-    padding: .35rem .75rem;
-    font-family: var(--shopmi-display);
-    letter-spacing: .5px;
-    font-size: .95rem;
-    cursor: pointer;
+/* Кнопка "В корзину" становится компактнее */
+.shopmi-product-body .shopmi-btn,
+.shopmi-product-card button,
+.card-body .btn {
+    min-height: 36px !important;
+    font-size: 0.95rem !important;
+    padding: 6px 8px !important;
 }
 
-.shopmi-search__chip:hover {
-    background: var(--shopmi-accent);
-    border-color: var(--shopmi-ink);
+/* 4. Адаптация шапки и контента (исправляем то, что съехало на скринах) */
+.shopmi-page {
+    padding: 1.5rem 0 !important;
 }
 
-.shopmi-search__empty {
-    text-align: center;
+/* Боковая панель фильтров уходит наверх или вниз на всю ширину */
+.shopmi-filter-sidebar,
+aside,
+div[class*="filter"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 2rem !important;
 }
 
-.shopmi-search__empty i {
-    color: var(--shopmi-muted);
-    margin-bottom: .5rem;
+/* Делаем баннеры и вкладки более аккуратными */
+.home-component .hero-banner {
+    max-height: 40vh !important;
+}
+
+.home-component .adv-tabs .nav-link {
+    padding: .6rem .8rem !important;
+    font-size: 0.95rem !important;
+}
+
+
+/* ==========================================================================
+   АДАПТАЦИЯ СТРАНИЦЫ КОРЗИНЫ (Экран меньше 768px)
+   ========================================================================== */
+@media (max-width: 767px) {
+
+    /* 1. Заставляем таблицу товаров и блок итогов встать друг под друга */
+    .cart-page .row,
+    main .row:has(.shopmi-order-summary) {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    /* Растягиваем обе колонки на 100% ширины экрана */
+    .cart-page .col-lg-8,
+    .cart-page .col-lg-4,
+    main .row:has(.shopmi-order-summary)>div {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* 2. Делаем блоки итогов и промокода аккуратными карточками */
+    .shopmi-order-summary,
+    div:has(> .shopmi-btn[wire\:click*="applyPromo"]) {
+        margin-top: 10px !important;
+        padding: 15px !important;
+    }
+
+    /* Кнопка "Оформить заказ" на весь экран, чтобы по ней было удобно тапать */
+    .shopmi-order-summary .shopmi-btn,
+    .shopmi-order-summary button {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: 48px !important;
+        font-size: 1.2rem !important;
+    }
+
+    /* 3. Адаптируем таблицу товаров (чтобы «Цена» и «Товар» не слипались) */
+    .shopmi-table thead {
+        display: none !important;
+        /* Прячем жесткую шапку таблицы */
+    }
+
+    .shopmi-table tr {
+        display: flex !important;
+        flex-direction: column !important;
+        /* Превращаем строку в вертикальный блок */
+        padding: 12px !important;
+        border-bottom: 1px solid var(--shopmi-line) !important;
+        position: relative;
+    }
+
+    .shopmi-table td {
+        display: block !important;
+        width: 100% !important;
+        padding: 4px 0 !important;
+        border: 0 !important;
+    }
+
+    /* Кнопки управления количеством и удаления */
+    .shopmi-qty {
+        margin-top: 8px !important;
+    }
 }

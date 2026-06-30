@@ -14,7 +14,6 @@ class SearchFormComponent extends Component
         $this->term = '';
     }
 
-
     public function performSearch()
     {
         if ($this->term) {
@@ -23,10 +22,9 @@ class SearchFormComponent extends Component
         }
     }
 
-
     public function search()
     {
-        
+
         return $this->performSearch();
     }
 
@@ -38,7 +36,7 @@ class SearchFormComponent extends Component
         if ($termLength > 1) {
             $search_results = Product::query()
                 ->where('stock', '>', 0)
-                ->whereLike('title', '%' . $this->term . '%')
+                ->whereLike('title', '%'.$this->term.'%')
                 ->limit(10)
                 ->get();
         }

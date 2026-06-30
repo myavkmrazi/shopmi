@@ -1,7 +1,7 @@
 import axios from 'axios';
-import $ from 'jquery'; // Добавьте эту строку
+import $ from 'jquery';
 
 window.axios = axios;
-window.$ = window.jQuery = $; // И эту строку
+window.$ = window.jQuery = $; 
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

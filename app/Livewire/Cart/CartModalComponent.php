@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Cart;
 
-use Livewire\Component;
-use Livewire\Attributes\On;
 use App\Helpers\Cart\Cart;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class CartModalComponent extends Component
 {
@@ -65,10 +65,9 @@ class CartModalComponent extends Component
         $this->refreshCart();
         $this->dispatch('cart-updated');
 
-
         $this->dispatch('show-alert', [
             'type' => 'success',
-            'message' => 'Товар удален из корзины!'
+            'message' => 'Товар удален из корзины!',
         ]);
     }
 

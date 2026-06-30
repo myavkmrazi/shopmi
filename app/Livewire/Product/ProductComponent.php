@@ -2,22 +2,25 @@
 
 namespace App\Livewire\Product;
 
-use App\Models\Product;
-use App\Models\FilterGroup;
-use Livewire\Component;
 use App\Helpers\Cart\Cart;
 use App\Helpers\Traits\CartTrait;
 use App\Helpers\Traits\WishlistTrait;
+use App\Models\FilterGroup;
+use App\Models\Product;
+use Livewire\Component;
 
 class ProductComponent extends Component
 {
     use CartTrait, WishlistTrait;
+
     public string $slug = '';
+
     public $product;
+
     public $productAttributes = [];
+
     public int $quantity = 1;
 
-    //add event listener
     protected $listeners = ['cartUpdated' => '$refresh'];
 
     public function mount($slug)
@@ -27,7 +30,6 @@ class ProductComponent extends Component
         $this->product = Product::with(['category.parent'])
             ->where('slug', $this->slug)
             ->firstOrFail();
-
 
         $this->loadAttributes();
     }
@@ -48,19 +50,16 @@ class ProductComponent extends Component
         }
     }
 
-
     public function addCart($productId)
     {
         $this->add2Cart($productId, $this->quantity);
 
         $this->dispatch('cart-updated');
 
-
         $this->dispatch('show-alert', [
             'type' => 'success',
-            'message' => 'Товар добавлен в корзину!'
+            'message' => 'Товар добавлен в корзину!',
         ]);
-
 
         $this->reset('quantity');
     }
@@ -88,7 +87,7 @@ class ProductComponent extends Component
         return view('livewire.product.product-component', [
             'related_product' => $related_product,
             'productAttributes' => $this->productAttributes,
-            'quantity' => $this->quantity 
+            'quantity' => $this->quantity,
         ]);
     }
 }

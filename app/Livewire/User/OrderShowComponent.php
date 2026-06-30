@@ -8,7 +8,9 @@ use Livewire\Component;
 class OrderShowComponent extends Component
 {
     public $order;
+
     public $orderId;
+
     public $orderProducts = [];
 
     public function mount($id = null)

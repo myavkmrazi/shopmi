@@ -25,7 +25,6 @@
                             $itemTotal = $itemPrice * $itemQuantity;
                             $total += $itemTotal;
 
-                            // Получаем изображение товара
                             $image = $product['image'] ?? null;
                             $imageUrl = $image
                                 ? (str_starts_with($image, 'http')
@@ -36,19 +35,16 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="py-3 px-4">
                                 <div class="flex items-center">
-                                    <!-- Изображение товара -->
                                     <div class="w-16 h-16 flex-shrink-0 mr-3">
                                         <img src="{{ $imageUrl }}" alt="{{ $product['title'] ?? 'Товар' }}"
                                             class="w-full h-full object-cover rounded border border-gray-200">
                                     </div>
 
                                     <div>
-                                        <!-- Название товара -->
                                         <p class="font-medium text-gray-900">
                                             {{ $product['title'] ?? 'Товар' }}
                                         </p>
 
-                                        <!-- Ссылка на товар -->
                                         @if (isset($product['slug']))
                                             <a href="{{ route('product', $product['slug']) }}"
                                                 class="text-blue-600 text-xs hover:text-blue-800 inline-flex items-center mt-1">
@@ -56,7 +52,6 @@
                                             </a>
                                         @endif
 
-                                        <!-- Артикул или ID -->
                                         @if (isset($product['product_id']))
                                             <p class="text-xs text-gray-500 mt-1">
                                                 Артикул: #{{ $product['product_id'] }}
@@ -86,7 +81,6 @@
             </table>
         </div>
     @elseif(isset($orderProducts) && count($orderProducts) > 0)
-        <!-- Альтернативный вариант, если передается $orderProducts -->
         <div class="border rounded-lg overflow-hidden">
             <table class="w-full">
                 <thead class="bg-gray-50">
@@ -109,7 +103,6 @@
                             $itemTotal = $itemPrice * $itemQuantity;
                             $total += $itemTotal;
 
-                            // Получаем изображение товара
                             $image = $product->image ?? ($product['image'] ?? null);
                             $imageUrl = $image
                                 ? (str_starts_with($image, 'http')
@@ -120,7 +113,6 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="py-3 px-4">
                                 <div class="flex items-center">
-                                    <!-- Изображение товара -->
                                     <div class="w-16 h-16 flex-shrink-0 mr-3">
                                         <img src="{{ $imageUrl }}"
                                             alt="{{ $product->title ?? ($product['title'] ?? 'Товар') }}"
@@ -128,12 +120,10 @@
                                     </div>
 
                                     <div>
-                                        <!-- Название товара -->
                                         <p class="font-medium text-gray-900">
                                             {{ $product->title ?? ($product['title'] ?? 'Товар') }}
                                         </p>
 
-                                        <!-- Ссылка на товар -->
                                         @if (isset($product->slug) || isset($product['slug']))
                                             <a href="{{ route('product', $product->slug ?? $product['slug']) }}"
                                                 class="text-blue-600 text-xs hover:text-blue-800 inline-flex items-center mt-1">
@@ -141,7 +131,6 @@
                                             </a>
                                         @endif
 
-                                        <!-- Артикул или ID -->
                                         @if (isset($product->product_id) || isset($product['product_id']))
                                             <p class="text-xs text-gray-500 mt-1">
                                                 Артикул: #{{ $product->product_id ?? $product['product_id'] }}
