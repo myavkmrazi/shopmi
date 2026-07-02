@@ -1,53 +1,38 @@
-FROM php:8.3-fpm-alpine AS base
+# Используем официальный образ PHP с Apache
+FROM php:8.2-apache
 
-# Системные зависимости
-RUN apk add --no-cache \
-    nginx \
-    supervisor \
-    git \
-    curl \
+# Устанавливаем необходимые системные зависимости
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     zip \
     unzip \
-    libpng-dev \
-    libzip-dev \
-    oniguruma-dev
+    git \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql gd
 
-# PHP расширения
-RUN docker-php-ext-install \
-    pdo \
-    pdo_mysql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
-    zip
+# Включаем модуль Apache rewrite (нужен для работы маршрутов Laravel)
+RUN a2enmod rewrite
 
-# Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Настраиваем Document Root для Laravel (папка public)
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
+# Устанавливаем Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Копируем файлы проекта
 WORKDIR /var/www/html
-
-# Сначала копируем только composer-файлы для кэширования слоя
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
-# Копируем остальной проект
 COPY . .
 
-RUN composer dump-autoload --optimize \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# Устанавливаем зависимости и настраиваем права
+RUN composer install --no-dev --optimize-autoloader \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Права на storage и bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Конфиги nginx и supervisor
-COPY docker/nginx.conf /etc/nginx/http.d/default.conf
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
+# Открываем порт 80
 EXPOSE 80
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Apache запускается автоматически, дополнительные скрипты не нужны
+CMD ["apache2-foreground"]
